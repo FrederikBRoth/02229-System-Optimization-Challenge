@@ -6,8 +6,13 @@ using System.Threading.Tasks;
 
 namespace SysOpt
 {
-    internal class EventTriggeredTask : Task
+    
+    internal class EventTriggeredTask : MyTask
     {
+        public EventTriggeredTask(int minimalInterArrival, int duration, int priority, int deadline, string name) : base(duration, priority, deadline, name)
+        {
+            MinimalInterArrival = minimalInterArrival;
+        }
         public int MinimalInterArrival { get; set; }
     }
 }

@@ -4,8 +4,6 @@ using CsvHelper;
 using SysOpt;
 using System.Globalization;
 
-Console.WriteLine("Hello, World!");
-
 static void LoadTasks(string path)
 {
     using var reader = new StreamReader(path);
@@ -32,4 +30,8 @@ static void LoadTasks(string path)
 
     }
 }
+
+Console.WriteLine("Hello, World!");
+
+var t = new MyTask();
 
