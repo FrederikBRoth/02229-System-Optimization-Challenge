@@ -10,15 +10,19 @@ namespace SysOpt
     {
         protected MyTask(int duration, int priority, int deadline, string name)
         {
-            Duration = duration;
+            ComputationTime = duration;
             Priority = priority;
             Deadline = deadline;
             Name = name;
+            ReleaseTime = 0;
+            WorstCaseReleaseTime = 0;
         }
 
-        public int Duration { get; set; }
+        public int ComputationTime { get; set; }
         public int Priority { get; set; }
         public int Deadline { get; set; }
         public string Name { get; set; }
+        public int ReleaseTime { get; set; }
+        public int WorstCaseReleaseTime { get; set; }
     }
 }
