@@ -9,38 +9,38 @@ namespace SysOpt.Helpers
 {
     static internal class EDFsimulation
     {
-        static public TTScheduleTable? getSchedule(List<TimeTriggeredTask> tasks)
+        public static TTScheduleTable? getSchedule(List<TimeTriggeredTask> tasks)
         {
             TTScheduleTable scheduleTable = new TTScheduleTable();
             int lcm = getLCM(tasks.Select(t => t.Period).ToArray());
             int t = 0;
 
-            while (t < lcm)
-            {
-                foreach (var task in tasks)
-                {
-                    if (task.ComputationTime > 0 && task.Deadline <= t)
-                        return null;
+            //while (t < lcm)
+            //{
+            //    foreach (var task in tasks)
+            //    {
+            //        if (task.ComputationTime > 0 && task.Deadline <= t)
+            //            return null;
 
-                    if (task.ComputationTime == 0 && task.Deadline >= t)
-                        if (t - task.ReleaseTime >= task.WorstCaseReleaseTime)
-                            task.WorstCaseReleaseTime = t - task.ReleaseTime;
-                    
-                    if (t%task.Period == 0)
-                    {
-                        task.ReleaseTime = t;
-                        //task.ComputationTime = 
-                        task.Deadline += t;
-                    }
-                }
+            //        if (task.ComputationTime == 0 && task.Deadline >= t)
+            //            if (t - task.ReleaseTime >= task.WorstCaseReleaseTime)
+            //                task.WorstCaseReleaseTime = t - task.ReleaseTime;
 
-                foreach (var task in tasks.Where(task => task.ComputationTime == 0))
-                {
+            //        if (t%task.Period == 0)
+            //        {
+            //            task.ReleaseTime = t;
+            //            //task.ComputationTime = 
+            //            task.Deadline += t;
+            //        }
+            //    }
 
-                }
-            }
+            //    foreach (var task in tasks.Where(task => task.ComputationTime == 0))
+            //    {
 
+            //    }
+            //}
 
+            return null;
         }
 
         static public int getLCM(int[] times)
