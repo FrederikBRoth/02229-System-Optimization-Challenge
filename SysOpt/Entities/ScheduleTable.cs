@@ -8,16 +8,21 @@ namespace SysOpt.Entities
 {
     internal class TTScheduleTable
     {
-        List<(int startTime, TimeTriggeredTask task)> schedule;
+        List<TimeTriggeredTask?> schedule;
 
         public TTScheduleTable()
         {
-            schedule = new List<(int startTime, TimeTriggeredTask task)> ();
+            schedule = new List<TimeTriggeredTask?> ();
         }
 
-        public void addNewTask(int startTime, TimeTriggeredTask task)
+        public void AddNewTask(TimeTriggeredTask task)
         {
-            schedule.Add((startTime, task));
+            schedule.Add(task);
+        }
+
+        public void AddIdle()
+        {
+            schedule.Add(null);
         }
     }
 

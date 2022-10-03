@@ -9,38 +9,55 @@ namespace SysOpt.Helpers
 {
     static internal class EDFsimulation
     {
-        public static TTScheduleTable? getSchedule(List<TimeTriggeredTask> tasks)
+        public static (TTScheduleTable?, int?) getSchedule(List<TimeTriggeredTask> tasks)
         {
             TTScheduleTable scheduleTable = new TTScheduleTable();
             int lcm = getLCM(tasks.Select(t => t.Period).ToArray());
             int t = 0;
+            bool isIdle;
+            while (t < lcm)
+            {
+                isIdle = true;
+                foreach (var task in tasks)
+                {
+                    if (task.ComputationTimeLeft > 0 && task.AbsoluteDeadline <= t)
+                        return (null, null);
 
-            //while (t < lcm)
-            //{
-            //    foreach (var task in tasks)
-            //    {
-            //        if (task.ComputationTime > 0 && task.Deadline <= t)
-            //            return null;
+                    if (task.ComputationTimeLeft == 0 && task.AbsoluteDeadline >= t)
+                        if (t - task.ReleaseTime >= task.WorstCaseReleaseTime)
+                            task.WorstCaseReleaseTime = t - task.ReleaseTime;
 
-            //        if (task.ComputationTime == 0 && task.Deadline >= t)
-            //            if (t - task.ReleaseTime >= task.WorstCaseReleaseTime)
-            //                task.WorstCaseReleaseTime = t - task.ReleaseTime;
+                    if (t % task.Period == 0)
+                    {
+                        task.ReleaseTime = t;
+                        task.ComputationTimeLeft = task.ComputationTime;
+                        task.AbsoluteDeadline = t + task.RelativeDeadline;
+                    }
 
-            //        if (t%task.Period == 0)
-            //        {
-            //            task.ReleaseTime = t;
-            //            //task.ComputationTime = 
-            //            task.Deadline += t;
-            //        }
-            //    }
+                    if (task.ComputationTimeLeft > 0)
+                        isIdle = false;  
 
-            //    foreach (var task in tasks.Where(task => task.ComputationTime == 0))
-            //    {
+                }
 
-            //    }
-            //}
+                if (isIdle)
+                    scheduleTable.AddIdle();
+                else
+                {
+                    TimeTriggeredTask? earliestDeadlineTask = tasks.MinBy(t => t.AbsoluteDeadline);
+                    if(earliestDeadlineTask != null)
+                    {
+                        scheduleTable.AddNewTask(earliestDeadlineTask);
+                        earliestDeadlineTask.ComputationTimeLeft -= 1;
+                    }
+                }
+                t += 1;
+            }
 
-            return null;
+            if(tasks.Any(task => task.ComputationTimeLeft > 0))
+                return (null, null);
+
+            // ?????
+            return (scheduleTable, tasks.Max(t => t.WorstCaseReleaseTime));
         }
 
         static public int getLCM(int[] times)
