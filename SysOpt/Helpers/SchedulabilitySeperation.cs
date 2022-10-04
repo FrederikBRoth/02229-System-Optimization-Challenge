@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    internal class ETSchedulability
+    internal class SchedulabilitySeperation
     {
+        //Struct containing delta and alpha
         private struct PollingServer
         {
             public PollingServer(int delta, double alpha)
@@ -18,26 +19,17 @@ namespace SysOpt.Helpers
             int Delta { get; set; }
             double Alpha { get; set; }
         }
-
-        //public static (bool, double) Schedulability(List<TimeTriggeredTask> pollingServers, List<EventTriggeredTask> tasks)
-        //{
-        //    List<PollingServer> servers = new();
-
-        //    //Computes Delta and Alpha and adds polling server to list
-
-        //    foreach (TimeTriggeredTask ps in pollingServer)
-        //    {
-        //        servers.Add(new PollingServer(ps.Period + ps.Deadline - (2 * ps.ComputationTime), (double)ps.ComputationTime / (double)ps.Period));
-        //    }
-
-        //    for
-        //}
-        public static (bool, double) Schedulability(TimeTriggeredTask pollingServer, List<EventTriggeredTask> tasks)
+        public static (bool, double) Schedulability(List<TimeTriggeredTask> pollingServer, List<EventTriggeredTask> tasks)
         {
-            //Computes Delta and Alpha
 
-            int delta = pollingServer.Period + pollingServer.Deadline - (2 * pollingServer.ComputationTime);
-            double alpha = (double)pollingServer.ComputationTime / (double)pollingServer.Period;
+            List<PollingServer> servers = new();
+
+            //Computes Delta and Alpha and adds polling server to list
+
+            foreach (TimeTriggeredTask ps in pollingServer) {
+                servers.Add(new PollingServer(ps.Period + ps.Deadline - (2 * ps.ComputationTime), (double)ps.ComputationTime / (double)ps.Period));
+            }
+
             int lcm = EDFsimulation.getLCM(tasks.Select(t => t.MinimalInterArrival).ToArray());
             int responseTime = 0;
             List<int> responseTimes = new();
