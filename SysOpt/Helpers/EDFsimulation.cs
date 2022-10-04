@@ -11,7 +11,7 @@ namespace SysOpt.Helpers
     {
         public static (TTScheduleTable, List<(string, int)>) getSchedule(List<TimeTriggeredTask> tasks)
         {
-            int lcm = GetLCM(tasks.Select(t => t.Period).ToArray());
+            int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.Period).ToArray());
             int tick = 0;
             List<Job> readyJobs = new List<Job>();
             Job? currentJob;
@@ -79,30 +79,5 @@ namespace SysOpt.Helpers
             return jobs.MinBy(j => j.AbsoluteDeadline);
         }
 
-        static int GetLCM(int[] times)
-        {
-            int currentLCM = 1;
-
-            foreach(int time in times)
-                currentLCM = Lcm(currentLCM, time);
-
-            return currentLCM;
-        }
-
-        static int Gcf(int a, int b)
-        {
-            while (b != 0)
-            {
-                int temp = b;
-                b = a % b;
-                a = temp;
-            }
-            return a;
-        }
-
-        static int Lcm(int a, int b)
-        {
-            return (a / Gcf(a, b)) * b;
-        }
     }
 }
