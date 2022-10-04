@@ -46,8 +46,8 @@ namespace SysOpt.Helpers
                     TimeTriggeredTask? earliestDeadlineTask = tasks.MinBy(t => t.AbsoluteDeadline);
                     if(earliestDeadlineTask != null)
                     {
-                        scheduleTable.AddNewTask(earliestDeadlineTask);
                         earliestDeadlineTask.ComputationTimeLeft -= 1;
+                        scheduleTable.AddNewTask(new TimeTriggeredTask(earliestDeadlineTask));
                     }
                 }
                 t += 1;
@@ -56,7 +56,7 @@ namespace SysOpt.Helpers
             if(tasks.Any(task => task.ComputationTimeLeft > 0))
                 return (null, null);
 
-            // ?????
+            // ????? what's the WCRT?
             return (scheduleTable, tasks.Max(t => t.WorstCaseReleaseTime));
         }
 

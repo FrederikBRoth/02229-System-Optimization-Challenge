@@ -13,6 +13,12 @@ namespace SysOpt
         {
             MinimalInterArrival = minimalInterArrival;
         }
+        public EventTriggeredTask(EventTriggeredTask task) : base(task)
+        {
+            MinimalInterArrival = task.MinimalInterArrival;
+        }
+        
+        // Ti
         public int MinimalInterArrival { get; set; }
     }
 }

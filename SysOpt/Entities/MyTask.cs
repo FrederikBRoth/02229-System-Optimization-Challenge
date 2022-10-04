@@ -16,7 +16,22 @@ namespace SysOpt
             Name = name;
             ReleaseTime = 0;
             WorstCaseReleaseTime = 0;
+            ComputationTimeLeft = 0;
+            AbsoluteDeadline = 0;
         }
+
+        protected MyTask(MyTask task)
+        {
+            ComputationTime = task.ComputationTime;
+            Priority = task.Priority;
+            RelativeDeadline = task.RelativeDeadline;
+            Name = task.Name;
+            ReleaseTime = task.ReleaseTime;
+            WorstCaseReleaseTime = task.WorstCaseReleaseTime;
+            ComputationTimeLeft = task.ComputationTimeLeft;
+            AbsoluteDeadline = task.AbsoluteDeadline;
+        }
+
         // Ci
         public int ComputationTime { get; set; }
         // ci

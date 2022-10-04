@@ -13,6 +13,12 @@ namespace SysOpt
             Period = period;
         }
 
+        public TimeTriggeredTask(TimeTriggeredTask task) : base(task)
+        {
+            Period = task.Period;
+        }
+
+        //Ti
         public int Period { get; set; }
     }
 }
