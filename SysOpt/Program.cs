@@ -13,9 +13,6 @@ string testCasePath = "test_cases\\inf_10_10\\taskset__1643188013-a_0.1-b_0.1-n_
 Console.WriteLine("Number of TT Tasks: " + tasks.ttList.Count);
 Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
-
-
-Console.WriteLine("Hello, World!");
-Console.WriteLine(EDFsimulation.getLCM(new int[] { 2, 3, 5 }));
+EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
 
 

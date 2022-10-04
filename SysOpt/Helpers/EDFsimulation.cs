@@ -9,77 +9,87 @@ namespace SysOpt.Helpers
 {
     static internal class EDFsimulation
     {
-        public static (TTScheduleTable?, List<int>?) getSchedule(List<TimeTriggeredTask> tasks)
+        public static (TTScheduleTable, List<(string, int)>) getSchedule(List<TimeTriggeredTask> tasks)
         {
+            int lcm = GetLCM(tasks.Select(t => t.Period).ToArray());
+            int tick = 0;
+            List<Job> readyJobs = new List<Job>();
+            Job? currentJob;
             TTScheduleTable scheduleTable = new TTScheduleTable();
-            int lcm = getLCM(tasks.Select(t => t.Period).ToArray());
-            int t = 0;
-            bool isIdle;
-            while (t < lcm)
+            int tmpResponseTime;
+
+            while (tick < lcm)
             {
-                isIdle = true;
-                foreach (var task in tasks)
+                readyJobs.AddRange(GetReadyJobs(tasks, tick));
+                currentJob = SelectEarliestDeadlineJob(readyJobs);
+
+                // Update
+                if (currentJob != null)
                 {
-                    if (task.ComputationTimeLeft > 0)
-                    {
-                        // Setting the flag for setting idle slots
-                        isIdle = false;
-
-                        // Deadline missed :(
-                        if (task.AbsoluteDeadline <= t)
-                            return (null, null);
-                    }
-
-                    // The task has finished within the deadline
-                    if (task.ComputationTimeLeft == 0 && task.AbsoluteDeadline >= t)
-                        // Update WCRT if the observed time was worse (longer)
-                        if (t - task.ReleaseTime >= task.WorstCaseReleaseTime)
-                            task.WorstCaseReleaseTime = t - task.ReleaseTime;
-
-                    // Schedule new job according to the period.
-                    if (t % task.Period == 0)
-                    {
-                        task.ReleaseTime = t;
-                        task.ComputationTimeLeft = task.ComputationTime;
-                        task.AbsoluteDeadline = t + task.RelativeDeadline;
-                    }
+                    scheduleTable.AddNewTask(currentJob);
+                    currentJob.Execute();
 
                 }
-
-                if (isIdle)
-                    scheduleTable.AddIdle();
                 else
                 {
-                    // Schedule the task with the earliest deadline
-                    TimeTriggeredTask? earliestDeadlineTask = tasks.MinBy(t => t.AbsoluteDeadline);
-                    if(earliestDeadlineTask != null)
-                    {
-                        earliestDeadlineTask.ComputationTimeLeft -= 1;
-                        scheduleTable.AddNewTask(new TimeTriggeredTask(earliestDeadlineTask));
-                    }
+                    scheduleTable.AddIdle();
+                    tick++;
+                    continue;
                 }
-                t += 1;
+
+                // Check if job is finished
+                if (currentJob.ComputationTimeLeft == 0)
+                {
+                    // Update WCRT
+                    tmpResponseTime = tick - currentJob.ReleaseTime;
+
+                    if (currentJob.Task.WorstCaseResponseTime < tmpResponseTime)
+                        currentJob.Task.WorstCaseResponseTime = tmpResponseTime;
+
+                    readyJobs.Remove(currentJob);
+
+                    // Is there anything more to update?
+                }
+
+                tick++;
             }
 
-            // Infeasable scheduling
-            if(tasks.Any(task => task.ComputationTimeLeft > 0))
-                return (null, null);
+            return (scheduleTable, tasks.Select(t => (t.Name, t.WorstCaseResponseTime)).ToList());
 
-            // ????? what's the WCRT?
-            return (scheduleTable, tasks.Select(t => t.WorstCaseReleaseTime).ToList());
         }
 
-        static public int getLCM(int[] times)
+        static public void PrintResult((TTScheduleTable, List<(string, int)>) input)
+        {
+            String ret = input.Item1.ToString();
+            ret += "\n------------\n WCRTs:\n";
+            foreach(var elem in input.Item2)
+            {
+                ret += elem.Item1 + " " + elem.Item2 + "\n ";
+            }
+            Console.WriteLine(ret);
+        }
+
+        static List<Job> GetReadyJobs(List<TimeTriggeredTask> tasks, int tick)
+        {
+            return tasks.Where(t => tick % t.Period == 0).Select(t => new Job(t, tick)).ToList();
+        }
+
+        static Job? SelectEarliestDeadlineJob(List<Job> jobs)
+        {
+            return jobs.MinBy(j => j.AbsoluteDeadline);
+        }
+
+        static int GetLCM(int[] times)
         {
             int currentLCM = 1;
 
             foreach(int time in times)
-                currentLCM = lcm(currentLCM, time);
+                currentLCM = Lcm(currentLCM, time);
 
             return currentLCM;
         }
 
-        static int gcf(int a, int b)
+        static int Gcf(int a, int b)
         {
             while (b != 0)
             {
@@ -90,9 +100,9 @@ namespace SysOpt.Helpers
             return a;
         }
 
-        static int lcm(int a, int b)
+        static int Lcm(int a, int b)
         {
-            return (a / gcf(a, b)) * b;
+            return (a / Gcf(a, b)) * b;
         }
     }
 }

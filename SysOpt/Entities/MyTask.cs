@@ -14,10 +14,7 @@ namespace SysOpt
             Priority = priority;
             RelativeDeadline = relativeDeadline;
             Name = name;
-            ReleaseTime = 0;
-            WorstCaseReleaseTime = 0;
-            ComputationTimeLeft = 0;
-            AbsoluteDeadline = 0;
+            WorstCaseResponseTime = 0;
         }
 
         protected MyTask(MyTask task)
@@ -26,26 +23,18 @@ namespace SysOpt
             Priority = task.Priority;
             RelativeDeadline = task.RelativeDeadline;
             Name = task.Name;
-            ReleaseTime = task.ReleaseTime;
-            WorstCaseReleaseTime = task.WorstCaseReleaseTime;
-            ComputationTimeLeft = task.ComputationTimeLeft;
-            AbsoluteDeadline = task.AbsoluteDeadline;
+            WorstCaseResponseTime = task.WorstCaseResponseTime;
         }
 
         // Ci
         public int ComputationTime { get; set; }
-        // ci
-        public int ComputationTimeLeft { get; set; }
         // p
         public int Priority { get; set; }
         // Di
         public int RelativeDeadline { get; set; }
-        // di
-        public int AbsoluteDeadline { get; set; }
+        // WCRTi
+        public int WorstCaseResponseTime { get; set; }
+
         public string Name { get; set; }
-        // ri
-        public int ReleaseTime { get; set; }
-        // WCRT
-        public int WorstCaseReleaseTime { get; set; }
     }
 }
