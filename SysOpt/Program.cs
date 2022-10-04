@@ -16,8 +16,8 @@ Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
 
 TimeTriggeredTask pollingServer = new TimeTriggeredTask(200, 50, 0, 200, "PollingServer1");
-(bool schedulable, int responseTime) result = ETSchedulability.Schedulability(pollingServer, tasks.etList);
+(bool schedulable, double averageResponseTime) result = ETSchedulability.Schedulability(pollingServer, tasks.etList);
 Console.WriteLine(result.schedulable);
-Console.WriteLine(result.responseTime);
+Console.WriteLine(result.averageResponseTime);
 
 
