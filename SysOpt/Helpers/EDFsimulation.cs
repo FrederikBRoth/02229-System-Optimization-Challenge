@@ -9,7 +9,7 @@ namespace SysOpt.Helpers
 {
     static internal class EDFsimulation
     {
-        public static (TTScheduleTable?, int?) getSchedule(List<TimeTriggeredTask> tasks)
+        public static (TTScheduleTable?, List<int>?) getSchedule(List<TimeTriggeredTask> tasks)
         {
             TTScheduleTable scheduleTable = new TTScheduleTable();
             int lcm = getLCM(tasks.Select(t => t.Period).ToArray());
@@ -20,13 +20,23 @@ namespace SysOpt.Helpers
                 isIdle = true;
                 foreach (var task in tasks)
                 {
-                    if (task.ComputationTimeLeft > 0 && task.AbsoluteDeadline <= t)
-                        return (null, null);
+                    if (task.ComputationTimeLeft > 0)
+                    {
+                        // Setting the flag for setting idle slots
+                        isIdle = false;
 
+                        // Deadline missed :(
+                        if (task.AbsoluteDeadline <= t)
+                            return (null, null);
+                    }
+
+                    // The task has finished within the deadline
                     if (task.ComputationTimeLeft == 0 && task.AbsoluteDeadline >= t)
+                        // Update WCRT if the observed time was worse (longer)
                         if (t - task.ReleaseTime >= task.WorstCaseReleaseTime)
                             task.WorstCaseReleaseTime = t - task.ReleaseTime;
 
+                    // Schedule new job according to the period.
                     if (t % task.Period == 0)
                     {
                         task.ReleaseTime = t;
@@ -34,15 +44,13 @@ namespace SysOpt.Helpers
                         task.AbsoluteDeadline = t + task.RelativeDeadline;
                     }
 
-                    if (task.ComputationTimeLeft > 0)
-                        isIdle = false;  
-
                 }
 
                 if (isIdle)
                     scheduleTable.AddIdle();
                 else
                 {
+                    // Schedule the task with the earliest deadline
                     TimeTriggeredTask? earliestDeadlineTask = tasks.MinBy(t => t.AbsoluteDeadline);
                     if(earliestDeadlineTask != null)
                     {
@@ -53,11 +61,12 @@ namespace SysOpt.Helpers
                 t += 1;
             }
 
+            // Infeasable scheduling
             if(tasks.Any(task => task.ComputationTimeLeft > 0))
                 return (null, null);
 
             // ????? what's the WCRT?
-            return (scheduleTable, tasks.Max(t => t.WorstCaseReleaseTime));
+            return (scheduleTable, tasks.Select(t => t.WorstCaseReleaseTime).ToList());
         }
 
         static public int getLCM(int[] times)
