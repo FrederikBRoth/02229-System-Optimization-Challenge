@@ -20,5 +20,10 @@ namespace SysOpt
 
         //Ti
         public int Period { get; set; }
+
+        public override string ToString()
+        {
+            return base.ToString() + " period = " + Period;
+        }
     }
 }
