@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SysOpt.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,19 +33,18 @@ namespace SysOpt.Helpers
 
         //    for
         //}
-        public static (bool, double) Schedulability(TimeTriggeredTask pollingServer, List<EventTriggeredTask> tasks)
+        public static List<(EventTriggeredTask, int)> Schedulability(TimeTriggeredTask pollingServer, List<EventTriggeredTask> tasks)
         {
             //Computes Delta and Alpha
-
-            int delta = pollingServer.Period + pollingServer.Deadline - (2 * pollingServer.ComputationTime);
+            int delta = pollingServer.Period + pollingServer.RelativeDeadline - (2 * pollingServer.ComputationTime);
             double alpha = (double)pollingServer.ComputationTime / (double)pollingServer.Period;
-            int lcm = EDFsimulation.getLCM(tasks.Select(t => t.MinimalInterArrival).ToArray());
+            int lcm = EDFsimulation.GetLCM(tasks.Select(t => t.MinimalInterArrival).ToArray());
             int responseTime = 0;
-            List<int> responseTimes = new();
+            List<(EventTriggeredTask, int)> responseTimes = new();
             foreach(EventTriggeredTask task in tasks)
             {
                 int t = 0;
-                responseTime = task.Deadline + 1;
+                responseTime = task.RelativeDeadline + 1;
 
                 while(t <= lcm)
                 {
@@ -57,18 +57,30 @@ namespace SysOpt.Helpers
                     if (supply >= demand)
                     {
                         responseTime = t;
-                        responseTimes.Add(responseTime);
+                        responseTimes.Add((task, responseTime));
                         break;
                     }
                     t++;
                 }
-                if (responseTime > task.Deadline)
+                if (responseTime > task.RelativeDeadline)
                 {
-                    return (false, responseTime);
+
+                    responseTimes.Add((task, responseTime));
+                    return responseTimes;
                 }
             }
 
-            return (true, responseTimes.Average());
+            return responseTimes;
+
+        }
+
+        public static void PrintETSchedulability(List<(EventTriggeredTask, int)> responseTimes)
+        {
+
+            foreach((EventTriggeredTask, int) e in responseTimes)
+            {
+                Console.WriteLine(e.ToString() + " Response Times = " + e.Item2);
+            }
 
         }
     }

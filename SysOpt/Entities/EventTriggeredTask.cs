@@ -23,5 +23,9 @@ namespace SysOpt
         public int MinimalInterArrival { get; set; }
         public int Seperation { get; set; }
 
+        public override string ToString()
+        {
+            return base.ToString() + " min arrival = " + MinimalInterArrival;
+        }
     }
 }

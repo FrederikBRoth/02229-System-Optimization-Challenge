@@ -79,7 +79,7 @@ namespace SysOpt.Helpers
             return jobs.MinBy(j => j.AbsoluteDeadline);
         }
 
-        static int GetLCM(int[] times)
+        public static int GetLCM(int[] times)
         {
             int currentLCM = 1;
 
