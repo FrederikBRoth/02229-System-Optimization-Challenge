@@ -38,7 +38,7 @@ namespace SysOpt.Helpers
             //Computes Delta and Alpha
             int delta = pollingServer.Period + pollingServer.RelativeDeadline - (2 * pollingServer.ComputationTime);
             double alpha = (double)pollingServer.ComputationTime / (double)pollingServer.Period;
-            int lcm = EDFsimulation.GetLCM(tasks.Select(t => t.MinimalInterArrival).ToArray());
+            int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.MinimalInterArrival).ToArray());
             int responseTime = 0;
             List<(EventTriggeredTask, int)> responseTimes = new();
             foreach(EventTriggeredTask task in tasks)
