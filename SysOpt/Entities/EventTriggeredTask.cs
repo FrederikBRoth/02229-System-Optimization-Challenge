@@ -12,6 +12,7 @@ namespace SysOpt
         public EventTriggeredTask(int minimalInterArrival, int duration, int priority, int deadline, string name) : base(duration, priority, deadline, name)
         {
             MinimalInterArrival = minimalInterArrival;
+            Seperation = 0;
         }
         public EventTriggeredTask(EventTriggeredTask task) : base(task)
         {
@@ -20,5 +21,11 @@ namespace SysOpt
         
         // Ti
         public int MinimalInterArrival { get; set; }
+        public int Seperation { get; set; }
+
+        public override string ToString()
+        {
+            return base.ToString() + " min arrival = " + MinimalInterArrival;
+        }
     }
 }
