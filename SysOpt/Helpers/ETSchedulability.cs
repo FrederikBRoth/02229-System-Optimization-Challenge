@@ -19,20 +19,6 @@ namespace SysOpt.Helpers
             int Delta { get; set; }
             double Alpha { get; set; }
         }
-
-        //public static (bool, double) Schedulability(List<TimeTriggeredTask> pollingServers, List<EventTriggeredTask> tasks)
-        //{
-        //    List<PollingServer> servers = new();
-
-        //    //Computes Delta and Alpha and adds polling server to list
-
-        //    foreach (TimeTriggeredTask ps in pollingServer)
-        //    {
-        //        servers.Add(new PollingServer(ps.Period + ps.Deadline - (2 * ps.ComputationTime), (double)ps.ComputationTime / (double)ps.Period));
-        //    }
-
-        //    for
-        //}
         public static List<(EventTriggeredTask, int)> Schedulability(TimeTriggeredTask pollingServer, List<EventTriggeredTask> tasks)
         {
             //Computes Delta and Alpha
