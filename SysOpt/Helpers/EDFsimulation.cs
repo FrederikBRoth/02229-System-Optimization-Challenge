@@ -74,6 +74,11 @@ namespace SysOpt.Helpers
             return tasks.Where(t => tick % t.Period == 0).Select(t => new Job(t, tick)).ToList();
         }
 
+        static public List<int> GetResponseTimeList((TTScheduleTable, List<(string, int)>) input)
+        {
+            return input.Item2.Select(t => t.Item2).ToList();
+        }
+
         static Job? SelectEarliestDeadlineJob(List<Job> jobs)
         {
             return jobs.MinBy(j => j.AbsoluteDeadline);
