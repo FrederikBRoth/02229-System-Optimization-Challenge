@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,18 @@ namespace SysOpt.Helpers
             int randomInt = random.Next(0, 2);
             if(randomInt == 0)
             {
-                Console.WriteLine("Test");
                 return 0;
             }else
             {
-                Console.WriteLine(randomInt);
                 return random.Next(1, 4);
             }
               
+        }
+        
+        static public int RandomChange(int scale)
+        {
+            Random random = new();
+            return (random.Next(0, 2)*2-1)*scale; 
         }
         static public int GetPenaltyValue()
         {

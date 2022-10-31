@@ -15,27 +15,33 @@ Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
 
 //Establishes polling Server
-TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(200, 50, 0, 200, "PollingServer1");
-TimeTriggeredTask pollingServer2 = new TimeTriggeredTask(200, 50, 0, 200, "PollingServer2");
-TimeTriggeredTask pollingServer3 = new TimeTriggeredTask(200, 50, 0, 200, "PollingServer2");
+TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer1");
+TimeTriggeredTask pollingServer2 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer2");
+TimeTriggeredTask pollingServer3 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer2");
+
 List<TimeTriggeredTask> pollingServers = new();
 pollingServers.Add(pollingServer1);
 pollingServers.Add(pollingServer2);
 pollingServers.Add(pollingServer3);
 
 
+//Needs to be done in the simanneal class.
 tasks.ttList.Add(pollingServer1);
+
+
 //EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
 //Console.WriteLine(EDFsimulation.getSchedule(tasks.ttList));
 ETSchedulability.PrintETSchedulability(ETSchedulability.Schedulability(pollingServers, tasks.etList));
 
-List<int> responseEDF = EDFsimulation.GetResponseTimeList(EDFsimulation.getSchedule(tasks.ttList));
-List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(pollingServers, tasks.etList));
-Console.WriteLine(SimulatedAnnealing.Cost(responseET));
-responseET.AddRange(responseEDF);
-Console.WriteLine(SimulatedAnnealing.Cost(responseET));
-Console.WriteLine(SimulatedAnnealing.Cost(responseEDF));
 
+
+SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 5000, 0.99, tasks);
+Console.WriteLine(sa.Cost(pollingServers));
+
+//Console.WriteLine(sa.ToString());
+//Console.WriteLine(sa.Cost(pollingServers));
+//Console.WriteLine(sa.Neighbors()[0].ToString());
+//Console.WriteLine(sa.Sim()[0].ToString());
 
 
 
