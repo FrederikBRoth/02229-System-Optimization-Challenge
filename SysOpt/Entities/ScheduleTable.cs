@@ -8,7 +8,7 @@ namespace SysOpt.Entities
 {
     public class TTScheduleTable
     {
-        List<Job?> schedule;
+       public List<Job?> schedule;
 
         public TTScheduleTable()
         {

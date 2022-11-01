@@ -1,6 +1,7 @@
 using SysOpt.Helpers;
 using SysOpt;
 using System.Formats.Asn1;
+using SysOpt.Entities;
 
 namespace Unit_Tests
 {
@@ -54,8 +55,23 @@ namespace Unit_Tests
             string testCasePath = "test_cases\\inf_10_10\\taskset__1643188013-a_0.1-b_0.1-n_30-m_20-d_unif-p_2000-q_4000-g_1000-t_5__0__tsk.csv";
             string TTTestPath = "TestingCSV\\TTTest.csv";
             (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(TTTestPath);
-            EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
-            Assert.IsTrue(tasks.ttList != null);
+            (TTScheduleTable, List<(string, int)>) schedule;
+            double idleTime = 0.0;
+
+            // Act
+            schedule = EDFsimulation.getSchedule(tasks.ttList);
+            EDFsimulation.PrintResult(schedule);
+            idleTime =(double) schedule.Item1.schedule.FindAll(j => j == null).Count / (double) schedule.Item1.schedule.Count;
+            Console.WriteLine(idleTime);
+
+            // Assert
+            Assert.IsTrue(tasks.ttList.Count != 0);
+            Assert.IsTrue(tasks.etList.Count == 0);
+            Assert.IsTrue(idleTime == 0.125);
+
+            Assert.AreEqual(9, schedule.Item2.Find(x => x.Item1 == "tTT0").Item2);
+            Assert.AreEqual(0, schedule.Item2.Find(x => x.Item1 == "tTT1").Item2);
+            Assert.AreEqual(19, schedule.Item2.Find(x => x.Item1 == "tTT2").Item2);
         }
     }
 }
