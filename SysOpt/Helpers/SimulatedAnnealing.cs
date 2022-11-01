@@ -47,6 +47,15 @@ namespace SysOpt.Helpers
             return altPollingServers;
         }
 
+        /*  TODO
+         * 
+         *  Refactor lists to arrays
+         *  Remove redundant Cost() function executions if a better neighbor model wasn't found
+         *  Look into better Neighbor() function. Ideas:
+         *      Generate 'n'-number of PollingServers, get the best one.
+         *      Only change 1 parameter instead of all of them
+         * 
+         */
 
         public List<TimeTriggeredTask> Sim()
         {
