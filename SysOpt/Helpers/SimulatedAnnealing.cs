@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,8 @@ namespace SysOpt.Helpers
 {
     internal class SimulatedAnnealing
     {
-        private const int ImprovementCountMax = 10;
-        private const int StepCountMax = 500;
+        private const int ImprovementCountMax = 5;
+        private const int StepCountMax = 100;
         List<TimeTriggeredTask> pollingServers;
         int startTemp;
         double coolingRate;
@@ -26,9 +27,11 @@ namespace SysOpt.Helpers
 
         public double Cost(List<TimeTriggeredTask> ps)
         {
+            tasks.ttList.AddRange(ps);
             List<int> responseEDF = EDFsimulation.GetResponseTimeList(EDFsimulation.getSchedule(tasks.ttList));
             List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(ps, tasks.etList));
             responseET.AddRange(responseEDF);
+            tasks.ttList.RemoveAll(t => ps.Any(ps => ps.Name == t.Name));
             return responseET.Average();
         }
 
@@ -51,29 +54,37 @@ namespace SysOpt.Helpers
             double temp = startTemp;
             int improvementCount = 0;
             int stepCount = 0;
-            while(running)
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            while (running)
             {
-                List<TimeTriggeredTask> neighbors = Neighbors();
-                double difference = Cost(neighbors) - Cost(pollingServers);
+                Debug.WriteLine("Before Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
+                List<TimeTriggeredTask> neighbors = new(Neighbors());
+                Debug.WriteLine("After Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
+                double nbCost = Cost(neighbors);
+                Debug.WriteLine("Neighbor Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
+
+                double currentCost = Cost(pollingServers);
+                Debug.WriteLine("Current Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
+                Debug.WriteLine("------------------------------------------------");
+
+                double difference = nbCost - currentCost;
                 if(difference < 0.0 || Anneal(difference, temp))
                 {
-                    pollingServers = neighbors;
+                    pollingServers = new(neighbors);
                     if(difference < 0.0)
                     {
                         improvementCount++;
                         if(improvementCount == ImprovementCountMax)
                         {
                             temp *= coolingRate;
-                            Console.WriteLine("Improved! : " + difference);
                             improvementCount = 0;
                             stepCount = -1;
                         }
                     }
 
                 }
-                Console.WriteLine(neighbors[0].ToString());
-                Console.WriteLine(pollingServers[0].ToString());
-
+                
                 stepCount++;
                 if(stepCount > StepCountMax)
                 {

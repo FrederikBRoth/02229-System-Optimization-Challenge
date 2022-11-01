@@ -9,19 +9,13 @@ namespace SysOpt.Helpers
 {
     public class AuxiliaryHelper
     {
-
-        static public int RandomSeperation()
+        static public string GetCurrentRuntime(TimeSpan ts)
         {
-            Random random = new();
-            int randomInt = random.Next(0, 2);
-            if(randomInt == 0)
-            {
-                return 0;
-            }else
-            {
-                return random.Next(1, 4);
-            }
-              
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
+            ts.Hours, ts.Minutes, ts.Seconds,
+            ts.Milliseconds / 10);
+
+            return elapsedTime;
         }
         
         static public int RandomChange(int scale)
