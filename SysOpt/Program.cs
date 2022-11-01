@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Xml.Linq;
 using SysOpt.Helpers;
 
-string testCasePath = "test_cases\\inf_10_10\\taskset__1643188013-a_0.1-b_0.1-n_30-m_20-d_unif-p_2000-q_4000-g_1000-t_5__0__tsk.csv";
+string testCasePath = "test_cases\\inf_10_10_seperation\\seperationCase.csv";
 
 (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(testCasePath);
 
@@ -25,23 +25,23 @@ pollingServers.Add(pollingServer2);
 pollingServers.Add(pollingServer3);
 
 
-//Needs to be done in the simanneal class.
-tasks.ttList.Add(pollingServer1);
-
 
 //EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
 //Console.WriteLine(EDFsimulation.getSchedule(tasks.ttList));
-ETSchedulability.PrintETSchedulability(ETSchedulability.Schedulability(pollingServers, tasks.etList));
 
 
 
 SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 5000, 0.99, tasks);
-Console.WriteLine(sa.Cost(pollingServers));
 
-//Console.WriteLine(sa.ToString());
-//Console.WriteLine(sa.Cost(pollingServers));
-//Console.WriteLine(sa.Neighbors()[0].ToString());
-//Console.WriteLine(sa.Sim()[0].ToString());
+long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+Console.WriteLine(sa.Cost(pollingServers));
+long milliAfter = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+Console.WriteLine(milliAfter - milliBefore);
+
+Console.WriteLine(sa.ToString());
+Console.WriteLine(sa.Cost(pollingServers));
+Console.WriteLine(sa.Neighbors()[0].ToString());
+Console.WriteLine(sa.Sim()[0].ToString());
 
 
 
