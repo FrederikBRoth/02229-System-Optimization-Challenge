@@ -1,5 +1,7 @@
 using SysOpt.Helpers;
 using SysOpt;
+using System.Formats.Asn1;
+
 namespace Unit_Tests
 {
     [TestClass]
@@ -49,7 +51,11 @@ namespace Unit_Tests
         public void EDFsimulation_Test()
         {
             // Arrange
-            List<TimeTriggeredTask> tasks;
+            string testCasePath = "test_cases\\inf_10_10\\taskset__1643188013-a_0.1-b_0.1-n_30-m_20-d_unif-p_2000-q_4000-g_1000-t_5__0__tsk.csv";
+            string TTTestPath = "TestingCSV\\TTTest.csv";
+            (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(TTTestPath);
+            EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
+            Assert.IsTrue(tasks.ttList != null);
         }
     }
 }

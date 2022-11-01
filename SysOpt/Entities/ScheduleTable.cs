@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Entities
 {
-    internal class TTScheduleTable
+    public class TTScheduleTable
     {
         List<Job?> schedule;
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Entities
 {
-    internal class Job
+    public class Job
     {
         public Job(MyTask task, int tick)
         {
