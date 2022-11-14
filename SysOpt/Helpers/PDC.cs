@@ -28,6 +28,10 @@ namespace SysOpt.Helpers
 
             // multiplies all the Computation time between t1 and t2
             int PDCompTime = task.ComputationTime * (RoundedEnd - RoundedStart);
+            // true if t1 and t2 contain no period
+            if(PDCompTime < 0)
+                return 0;
+
             return PDCompTime;
         }
     }
