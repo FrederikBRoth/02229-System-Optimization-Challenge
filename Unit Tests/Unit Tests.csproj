@@ -11,9 +11,17 @@
 
   <ItemGroup>
     <None Remove="TestingCSV\TTTest.csv" />
+    <None Remove="TestingCSV\TTTest100Booked.csv" />
+    <None Remove="TestingCSV\TTTestOverBooked.csv" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="TestingCSV\TTTest100Booked.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestingCSV\TTTestOverBooked.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestingCSV\TTTest.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

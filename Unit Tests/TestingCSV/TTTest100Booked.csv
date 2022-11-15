@@ -1,0 +1,5 @@
+tasks;name;duration;period;type;priority;deadline
+;tTT0;5;20;TT;7;20
+;tTT1;1;2;TT;7;2
+;tTT2;5;40;TT;7;40
+;tTT3;1;8;TT;7;8
