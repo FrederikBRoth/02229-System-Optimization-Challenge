@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    internal class AuxiliaryHelper
+    public class AuxiliaryHelper
     {
         static public int GetLCM(int[] times)
         {
@@ -18,7 +18,7 @@ namespace SysOpt.Helpers
             return currentLCM;
         }
 
-        static int Gcf(int a, int b)
+        static public int Gcf(int a, int b)
         {
             while (b != 0)
             {
@@ -29,7 +29,7 @@ namespace SysOpt.Helpers
             return a;
         }
 
-        static int Lcm(int a, int b)
+        static public int Lcm(int a, int b)
         {
             return (a / Gcf(a, b)) * b;
         }
