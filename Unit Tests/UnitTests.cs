@@ -2,14 +2,17 @@ using SysOpt.Helpers;
 using SysOpt;
 using System.Formats.Asn1;
 using SysOpt.Entities;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Unit_Tests
 {
     [TestClass]
     public class UnitTests
     {
+        string TTTestPath = "TestingCSV\\TTTest.csv";
 
-        /* Auxiliary Helper Methods */ 
+
+        /* Auxiliary Helper Methods */
 
         [TestMethod]
         public void GetLCM_Test()
@@ -52,17 +55,14 @@ namespace Unit_Tests
         public void EDFsimulation_Test()
         {
             // Arrange
-            string testCasePath = "test_cases\\inf_10_10\\taskset__1643188013-a_0.1-b_0.1-n_30-m_20-d_unif-p_2000-q_4000-g_1000-t_5__0__tsk.csv";
-            string TTTestPath = "TestingCSV\\TTTest.csv";
             (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(TTTestPath);
             (TTScheduleTable, List<(string, int)>) schedule;
-            double idleTime = 0.0;
+            double idleTime;
 
             // Act
             schedule = EDFsimulation.getSchedule(tasks.ttList);
             EDFsimulation.PrintResult(schedule);
             idleTime =(double) schedule.Item1.schedule.FindAll(j => j == null).Count / (double) schedule.Item1.schedule.Count;
-            Console.WriteLine(idleTime);
 
             // Assert
             Assert.IsTrue(tasks.ttList.Count != 0);
@@ -72,6 +72,24 @@ namespace Unit_Tests
             Assert.AreEqual(9, schedule.Item2.Find(x => x.Item1 == "tTT0").Item2);
             Assert.AreEqual(0, schedule.Item2.Find(x => x.Item1 == "tTT1").Item2);
             Assert.AreEqual(19, schedule.Item2.Find(x => x.Item1 == "tTT2").Item2);
+        }
+
+        [TestMethod]
+        public void GetReadyJobs_Test()
+        {
+            // Arrange
+            (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(TTTestPath);
+            (TTScheduleTable, List<(string, int)>) schedule;
+            List<Job> jobs = EDFsimulation.GetReadyJobs(tasks.ttList, 0);
+            List<Job> expected0TickJobs;
+            int tick = 0;
+
+            // Act
+            schedule = EDFsimulation.getSchedule(tasks.ttList);
+            expected0TickJobs = tasks.ttList.Select(t => new Job(t, tick)).ToList();
+            expected0TickJobs = null;
+            // Assert
+            Assert.AreEqual(expected0TickJobs, EDFsimulation.GetReadyJobs(tasks.ttList, tick));
         }
     }
 }

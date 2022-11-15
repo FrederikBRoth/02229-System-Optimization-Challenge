@@ -69,7 +69,7 @@ namespace SysOpt.Helpers
             Console.WriteLine(ret);
         }
 
-        static List<Job> GetReadyJobs(List<TimeTriggeredTask> tasks, int tick)
+        static public List<Job> GetReadyJobs(List<TimeTriggeredTask> tasks, int tick)
         {
             return tasks.Where(t => tick % t.Period == 0).Select(t => new Job(t, tick)).ToList();
         }
