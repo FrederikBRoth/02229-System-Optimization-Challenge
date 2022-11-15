@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    internal class TaskReader
+    public class TaskReader
     {
         static public (List<TimeTriggeredTask>, List<EventTriggeredTask>) LoadTasks(string path)
         {

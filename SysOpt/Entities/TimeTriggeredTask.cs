@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt
 {
-    internal class TimeTriggeredTask : MyTask
+    public class TimeTriggeredTask : MyTask
     {
         public TimeTriggeredTask(int period, int duration, int priority, int deadline, string name ) : base(duration, priority, deadline, name)
         {

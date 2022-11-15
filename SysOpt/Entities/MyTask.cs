@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt
 {
-    internal abstract class MyTask
+    public abstract class MyTask
     {
         protected MyTask(int duration, int priority, int relativeDeadline, string name)
         {

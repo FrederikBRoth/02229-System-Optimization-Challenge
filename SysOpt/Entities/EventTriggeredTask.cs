@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SysOpt
 {
     
-    internal class EventTriggeredTask : MyTask
+    public class EventTriggeredTask : MyTask
     {
         public EventTriggeredTask(int minimalInterArrival, int duration, int priority, int deadline, string name) : base(duration, priority, deadline, name)
         {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    static internal class EDFsimulation
+    static public class EDFsimulation
     {
         public static (TTScheduleTable, List<(string, int)>) getSchedule(List<TimeTriggeredTask> tasks)
         {
@@ -69,7 +69,7 @@ namespace SysOpt.Helpers
             Console.WriteLine(ret);
         }
 
-        static List<Job> GetReadyJobs(List<TimeTriggeredTask> tasks, int tick)
+        static public List<Job> GetReadyJobs(List<TimeTriggeredTask> tasks, int tick)
         {
             return tasks.Where(t => tick % t.Period == 0).Select(t => new Job(t, tick)).ToList();
         }
