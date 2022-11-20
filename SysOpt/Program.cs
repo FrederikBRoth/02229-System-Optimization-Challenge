@@ -17,7 +17,7 @@ Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 //Establishes polling Server
 TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer1");
 TimeTriggeredTask pollingServer2 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer2");
-TimeTriggeredTask pollingServer3 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer2");
+TimeTriggeredTask pollingServer3 = new TimeTriggeredTask(2000, 500, 0, 1500, "PollingServer3");
 
 List<TimeTriggeredTask> pollingServers = new();
 pollingServers.Add(pollingServer1);
@@ -38,10 +38,10 @@ Console.WriteLine(sa.Cost(pollingServers));
 long milliAfter = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 Console.WriteLine(milliAfter - milliBefore);
 
-Console.WriteLine(sa.ToString());
-Console.WriteLine(sa.Cost(pollingServers));
-Console.WriteLine(sa.Neighbors()[0].ToString());
-Console.WriteLine(sa.Sim()[0].ToString());
+//Console.WriteLine(sa.ToString());
+//Console.WriteLine(sa.Cost(pollingServers));
+//Console.WriteLine(sa.Neighbors()[0].ToString());
+//Console.WriteLine(sa.Sim()[0].ToString());
 
 
 

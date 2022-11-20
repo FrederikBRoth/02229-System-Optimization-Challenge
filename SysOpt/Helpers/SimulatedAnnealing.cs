@@ -91,9 +91,7 @@ namespace SysOpt.Helpers
                             stepCount = -1;
                         }
                     }
-
                 }
-                
                 stepCount++;
                 if(stepCount > StepCountMax)
                 {
