@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Text;
@@ -25,6 +26,7 @@ namespace SysOpt.Helpers
             this.tasks = tasks;
         }
 
+
         public double Cost(List<TimeTriggeredTask> ps)
         {
             tasks.ttList.AddRange(ps);
@@ -32,15 +34,17 @@ namespace SysOpt.Helpers
             List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(ps, tasks.etList));
             responseET.AddRange(responseEDF);
             tasks.ttList.RemoveAll(t => ps.Any(ps => ps.Name == t.Name));
+            //Do sum instead of average
             return responseET.Average();
         }
 
         public List<TimeTriggeredTask> Neighbors()
         {
-            TimeTriggeredTask temp = new TimeTriggeredTask(pollingServers[0].Period, pollingServers[0].ComputationTime, pollingServers[0].Priority, pollingServers[0].RelativeDeadline, pollingServers[0].Name);
+            TimeTriggeredTask temp = new TimeTriggeredTask(pollingServers[0].Period, pollingServers[0].ComputationTime, pollingServers[0].Priority, pollingServers[0].RelativeDeadline, pollingServers[0].Name);    
             TimeTriggeredTask ps = ChangeAllParameters(temp);
+
             List<TimeTriggeredTask> altPollingServers = new();
-            foreach(TimeTriggeredTask t in pollingServers)
+            foreach (TimeTriggeredTask t in pollingServers)
             {
                 altPollingServers.Add(ps);
             }
@@ -64,7 +68,8 @@ namespace SysOpt.Helpers
             int improvementCount = 0;
             int stepCount = 0;
             Stopwatch stopwatch = Stopwatch.StartNew();
-
+            bool updateCurrentCost = true;
+            double currentCost = 0.0;
             while (running)
             {
                 Debug.WriteLine("Before Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
@@ -72,17 +77,22 @@ namespace SysOpt.Helpers
                 Debug.WriteLine("After Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
                 double nbCost = Cost(neighbors);
                 Debug.WriteLine("Neighbor Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
+                if(updateCurrentCost)
+                {
+                    currentCost = Cost(pollingServers);
 
-                double currentCost = Cost(pollingServers);
+                }
                 Debug.WriteLine("Current Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
                 Debug.WriteLine("------------------------------------------------");
 
                 double difference = nbCost - currentCost;
                 if(difference < 0.0 || Anneal(difference, temp))
                 {
+                    updateCurrentCost = true;
                     pollingServers = new(neighbors);
                     if(difference < 0.0)
                     {
+                        Console.WriteLine("Improvement" + currentCost);
                         improvementCount++;
                         if(improvementCount == ImprovementCountMax)
                         {
@@ -91,7 +101,11 @@ namespace SysOpt.Helpers
                             stepCount = -1;
                         }
                     }
+                } else
+                {
+                    updateCurrentCost = false;
                 }
+                
                 stepCount++;
                 if(stepCount > StepCountMax)
                 {
@@ -112,9 +126,11 @@ namespace SysOpt.Helpers
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
         static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps)
         {
-            ps.Period += AuxiliaryHelper.RandomChange(50);
-            ps.ComputationTime += AuxiliaryHelper.RandomChange(50);
-            ps.RelativeDeadline += AuxiliaryHelper.RandomChange(50);
+            int randomChange = AuxiliaryHelper.RandomChange(10);
+            ps.Period += randomChange;
+            ps.RelativeDeadline += randomChange;
+            ps.ComputationTime = ps.RelativeDeadline / 2;
+            Console.WriteLine(ps.ToString());
             return WellformedPollingServer(ps);
 
         }
@@ -128,11 +144,11 @@ namespace SysOpt.Helpers
             }
             if (ps.RelativeDeadline < 0)
             {
-                ps.RelativeDeadline = 0;
+                ps.RelativeDeadline = 10;
             }
             if (ps.Period < 0)
             {
-                ps.Period = 0;
+                ps.Period = 10;
             }
             if (ps.ComputationTime < 0)
             {
@@ -141,6 +157,14 @@ namespace SysOpt.Helpers
             if(ps.ComputationTime > ps.Period)
             {
                 ps.ComputationTime = ps.Period;
+            }
+            if(ps.RelativeDeadline == 0)
+            {
+                ps.RelativeDeadline = 10;
+            }
+            if (ps.Period == 0)
+            {
+                ps.Period = 10;
             }
             return ps;
         }
