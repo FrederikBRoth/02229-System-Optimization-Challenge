@@ -11,7 +11,9 @@ namespace SysOpt.Helpers
     {
         public static (TTScheduleTable, List<(string, int)>) getSchedule(List<TimeTriggeredTask> tasks)
         {
-            int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.Period).ToArray());
+            //int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.Period).ToArray());
+            //Console.WriteLine(lcm);
+            int lcm = 12000;
             int tick = 0;
             List<Job> readyJobs = new List<Job>();
             Job? currentJob;
