@@ -53,7 +53,7 @@ namespace SysOpt.Helpers
             return (a / Gcf(a, b)) * b;
         }
 
-        static List<int> GetRefinedList(int maxLCM)
+        public static List<int> GetRefinedList(int maxLCM)
         {
             List<int> list = new List<int>();
             for(int i = 2; i < maxLCM; i++)

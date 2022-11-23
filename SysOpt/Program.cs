@@ -15,26 +15,41 @@ Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
 
 //Establishes polling Server
-TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(2000, 1500, 0, 2000, "PollingServer1");
-TimeTriggeredTask pollingServer2 = new TimeTriggeredTask(2000, 1500, 0, 2000, "PollingServer2");
-TimeTriggeredTask pollingServer3 = new TimeTriggeredTask(2000, 1500, 0, 2000, "PollingServer3");
+TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(2, 1, 0, 2, "PollingServer1");
+TimeTriggeredTask pollingServer2 = new TimeTriggeredTask(2, 1, 0, 2, "PollingServer2");
+TimeTriggeredTask pollingServer3 = new TimeTriggeredTask(2, 1, 0, 2, "PollingServer3");
+
+
 
 List<TimeTriggeredTask> pollingServers = new();
 pollingServers.Add(pollingServer1);
 pollingServers.Add(pollingServer2);
 pollingServers.Add(pollingServer3);
 
+List<TimeTriggeredTask> withPS = new();
+withPS.AddRange(pollingServers);
+withPS.AddRange(tasks.ttList);
 
 
 //EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
-//Console.WriteLine(EDFsimulation.getSchedule(tasks.ttList));
+EDFsimulation.PrintResult(EDFsimulation.getSchedule(withPS));
 
+//Console.WriteLine(EDFsimulation.getSchedule(withPS));
+
+ETSchedulability.PrintETSchedulability(ETSchedulability.Schedulability(pollingServers, tasks.etList));
+List<int> test = AuxiliaryHelper.GetRefinedList(12000);
+
+
+
+//foreach(int i in test)
+//{
+//    Console.WriteLine(i);
+//}
 
 
 SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 5000, 0.99, tasks);
 
 long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
-ETSchedulability.PrintETSchedulability(ETSchedulability.Schedulability(pollingServers, tasks.etList));
 //long milliAfter = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 //Console.WriteLine(milliAfter - milliBefore);
 
