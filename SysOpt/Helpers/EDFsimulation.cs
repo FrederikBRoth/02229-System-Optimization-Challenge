@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 namespace SysOpt.Helpers
 {
     static internal class EDFsimulation
+
     {
         public static (TTScheduleTable, List<(string, int)>) getSchedule(List<TimeTriggeredTask> tasks)
         {

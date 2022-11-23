@@ -38,10 +38,10 @@ namespace SysOpt.Helpers
             return responseET.Average();
         }
 
-        public List<TimeTriggeredTask> Neighbors()
+        public List<TimeTriggeredTask> Neighbors(List<int> periods)
         {
-            TimeTriggeredTask temp = new TimeTriggeredTask(pollingServers[0].Period, pollingServers[0].ComputationTime, pollingServers[0].Priority, pollingServers[0].RelativeDeadline, pollingServers[0].Name);    
-            TimeTriggeredTask ps = ChangeAllParameters(temp);
+            TimeTriggeredTask temp = new TimeTriggeredTask(pollingServers[0].Period, pollingServers[0].ComputationTime, pollingServers[0].Priority, pollingServers[0].RelativeDeadline, pollingServers[0].Name);
+            TimeTriggeredTask ps = ChangeAllParameters(temp, periods);
 
             List<TimeTriggeredTask> altPollingServers = new();
             foreach (TimeTriggeredTask t in pollingServers)
@@ -59,13 +59,17 @@ namespace SysOpt.Helpers
          *      Generate 'n'-number of PollingServers, get the best one.
          *      Only change 1 parameter instead of all of them
          * 
+         * RESULT
+         * 
+         * Small period and duration isn't necesarrily a bad thing because its easier to fit into a Schedule using EDF. Also the important factor
+         * for PollingServers is the ratio between Duration and Budget. The specific number is fairly irrelevant. 
          */
 
         public List<TimeTriggeredTask> Sim()
         {
+            List<int> periods = AuxiliaryHelper.GetRefinedList(12000);
             bool running = true;
             double temp = startTemp;
-            int improvementCount = 0;
             int stepCount = 0;
             Stopwatch stopwatch = Stopwatch.StartNew();
             bool updateCurrentCost = true;
@@ -73,11 +77,11 @@ namespace SysOpt.Helpers
             while (running)
             {
                 Debug.WriteLine("Before Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
-                List<TimeTriggeredTask> neighbors = new(Neighbors());
+                List<TimeTriggeredTask> neighbors = new(Neighbors(periods));
                 Debug.WriteLine("After Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
                 double nbCost = Cost(neighbors);
                 Debug.WriteLine("Neighbor Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
-                if(updateCurrentCost)
+                if (updateCurrentCost)
                 {
                     currentCost = Cost(pollingServers);
 
@@ -86,32 +90,33 @@ namespace SysOpt.Helpers
                 Debug.WriteLine("------------------------------------------------");
 
                 double difference = nbCost - currentCost;
-                if(difference < 0.0 || Anneal(difference, temp))
+                if (difference < 0.0 || Anneal(difference, temp))
                 {
                     updateCurrentCost = true;
                     pollingServers = new(neighbors);
-                    if(difference < 0.0)
+                    if (difference < 0.0)
                     {
                         Console.WriteLine("Improvement" + currentCost);
-                        improvementCount++;
-                        if(improvementCount == ImprovementCountMax)
-                        {
-                            temp *= coolingRate;
-                            improvementCount = 0;
-                            stepCount = -1;
-                        }
+                        //improvementCount++;
+                        //if(improvementCount == ImprovementCountMax)
+                        //{
+                        temp *= coolingRate;
+                        //improvementCount = 0;
+                        stepCount = -1;
+                        //}
                     }
-                } else
+                }
+                else
                 {
                     updateCurrentCost = false;
                 }
-                
+
                 stepCount++;
-                if(stepCount > StepCountMax)
+                if (stepCount > StepCountMax)
                 {
                     running = false;
                 }
-                
+
             }
             return pollingServers;
 
@@ -124,13 +129,18 @@ namespace SysOpt.Helpers
         }
 
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
-        static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps)
+        static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
         {
-            int randomChange = AuxiliaryHelper.RandomChange(10);
-            ps.Period += randomChange;
-            ps.RelativeDeadline += randomChange;
-            ps.ComputationTime = ps.RelativeDeadline / 2;
-            Console.WriteLine(ps.ToString());
+            int randomChange = AuxiliaryHelper.RandomChange(1);
+            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
+            while (randomIndex < 0 && periods.Count > randomChange)
+            {
+                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
+            }
+            ps.Period = periods[randomIndex];
+            ps.RelativeDeadline = periods[randomIndex];
+            ps.ComputationTime += randomChange;
+            Console.WriteLine(WellformedPollingServer(ps));
             return WellformedPollingServer(ps);
 
         }
@@ -138,33 +148,13 @@ namespace SysOpt.Helpers
         //Making sure that the Polling server parameters isn't in the negative to prevent the algorithms working
         static public TimeTriggeredTask WellformedPollingServer(TimeTriggeredTask ps)
         {
-            if (ps.RelativeDeadline > ps.Period)
-            {
-                ps.RelativeDeadline = ps.Period;
-            }
-            if (ps.RelativeDeadline < 0)
-            {
-                ps.RelativeDeadline = 10;
-            }
-            if (ps.Period < 0)
-            {
-                ps.Period = 10;
-            }
             if (ps.ComputationTime < 0)
             {
-                ps.ComputationTime = 0;
+                ps.ComputationTime = 1;
             }
-            if(ps.ComputationTime > ps.Period)
+            if (ps.ComputationTime > ps.Period)
             {
                 ps.ComputationTime = ps.Period;
-            }
-            if(ps.RelativeDeadline == 0)
-            {
-                ps.RelativeDeadline = 10;
-            }
-            if (ps.Period == 0)
-            {
-                ps.Period = 10;
             }
             return ps;
         }
