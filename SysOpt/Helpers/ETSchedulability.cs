@@ -27,12 +27,12 @@ namespace SysOpt.Helpers
             int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.MinimalInterArrival).ToArray());
             int responseTime = 0;
             List<(EventTriggeredTask, int)> responseTimes = new();
-            foreach(EventTriggeredTask task in tasks)
+            foreach (EventTriggeredTask task in tasks)
             {
                 int t = 0;
                 responseTime = task.RelativeDeadline + 1;
 
-                while(t <= lcm)
+                while (t <= lcm)
                 {
                     double supply = alpha * (t - delta);
                     double demand = 0;
@@ -51,7 +51,7 @@ namespace SysOpt.Helpers
                 if (responseTime > task.RelativeDeadline)
                 {
 
-                    responseTimes.Add((task, responseTime));
+                    responseTimes.Add((task, responseTime + AuxiliaryHelper.GetPenaltyValue()));
                     return responseTimes;
                 }
             }
@@ -59,6 +59,48 @@ namespace SysOpt.Helpers
             return responseTimes;
 
         }
+
+        public static List<(EventTriggeredTask, int)> Schedulability(List<TimeTriggeredTask> pollingServers, List<EventTriggeredTask> tasks)
+        {
+            //Index each ET to an indice to make sure we get the right lists down. ET with seperation 0 goes in all lists cause they can be in everything
+            Dictionary<int, List<EventTriggeredTask>> etmap = new();
+            List<(EventTriggeredTask, int)> responseTimes = new(); 
+            foreach (EventTriggeredTask ettask in tasks) {
+               if(ettask.Seperation != 0)
+                {
+                    if (!etmap.ContainsKey(ettask.Seperation))
+                    {
+                        etmap.Add(ettask.Seperation, new List<EventTriggeredTask>());
+                    }
+                    etmap[ettask.Seperation].Add(ettask);
+                }
+            }
+            foreach(EventTriggeredTask ettask in tasks) {
+                if(ettask.Seperation == 0)
+                {
+                    for(int i = 1; i < etmap.Keys.Count; i++)
+                    {
+                        etmap[i].Add(ettask);
+                    }
+                }
+            }
+
+            if (etmap.Keys.Count == pollingServers.Count)
+            {
+                for (int i = 1; i < etmap.Keys.Count; i++)
+                {
+                    responseTimes.AddRange(Schedulability(pollingServers[i - 1], etmap[i]));
+                }
+                return responseTimes;
+
+            } else
+            {
+                return responseTimes;
+            }
+
+        }
+
+
 
         public static void PrintETSchedulability(List<(EventTriggeredTask, int)> responseTimes)
         {
@@ -68,6 +110,11 @@ namespace SysOpt.Helpers
                 Console.WriteLine(e.ToString() + " Response Times = " + e.Item2);
             }
 
+        }
+
+        public static List<int> GetResponseTimeList(List<(EventTriggeredTask, int)> responseTimes)
+        {
+            return responseTimes.Select(t => t.Item2).ToList();
         }
     }
 }

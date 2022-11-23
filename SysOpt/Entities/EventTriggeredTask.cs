@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SysOpt.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,10 @@ namespace SysOpt
     
     public class EventTriggeredTask : MyTask
     {
-        public EventTriggeredTask(int minimalInterArrival, int duration, int priority, int deadline, string name) : base(duration, priority, deadline, name)
+        public EventTriggeredTask(int minimalInterArrival, int duration, int priority, int deadline, string name, int seperation) : base(duration, priority, deadline, name)
         {
             MinimalInterArrival = minimalInterArrival;
-            Seperation = 0;
+            Seperation = seperation;
         }
         public EventTriggeredTask(EventTriggeredTask task) : base(task)
         {

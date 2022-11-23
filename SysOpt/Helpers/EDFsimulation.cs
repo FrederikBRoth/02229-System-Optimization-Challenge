@@ -11,7 +11,9 @@ namespace SysOpt.Helpers
     {
         public static (TTScheduleTable, List<(string, int)>) getSchedule(List<TimeTriggeredTask> tasks)
         {
-            int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.Period).ToArray());
+            //int lcm = AuxiliaryHelper.GetLCM(tasks.Select(t => t.Period).ToArray());
+            //Console.WriteLine(lcm);
+            int lcm = 12000;
             int tick = 0;
             List<Job> readyJobs = new List<Job>();
             Job? currentJob;
@@ -72,6 +74,11 @@ namespace SysOpt.Helpers
         static public List<Job> GetReadyJobs(List<TimeTriggeredTask> tasks, int tick)
         {
             return tasks.Where(t => tick % t.Period == 0).Select(t => new Job(t, tick)).ToList();
+        }
+
+        static public List<int> GetResponseTimeList((TTScheduleTable, List<(string, int)>) input)
+        {
+            return input.Item2.Select(t => t.Item2).ToList();
         }
 
         static Job? SelectEarliestDeadlineJob(List<Job> jobs)
