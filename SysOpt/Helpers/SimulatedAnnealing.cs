@@ -71,23 +71,16 @@ namespace SysOpt.Helpers
             bool running = true;
             double temp = startTemp;
             int stepCount = 0;
-            Stopwatch stopwatch = Stopwatch.StartNew();
             bool updateCurrentCost = true;
             double currentCost = 0.0;
             while (running)
             {
-                Debug.WriteLine("Before Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
                 List<TimeTriggeredTask> neighbors = new(Neighbors(periods));
-                Debug.WriteLine("After Neighbor " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
                 double nbCost = Cost(neighbors);
-                Debug.WriteLine("Neighbor Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
                 if (updateCurrentCost)
                 {
                     currentCost = Cost(pollingServers);
-
                 }
-                Debug.WriteLine("Current Cost " + AuxiliaryHelper.GetCurrentRuntime(stopwatch.Elapsed));
-                Debug.WriteLine("------------------------------------------------");
 
                 double difference = nbCost - currentCost;
                 if (difference < 0.0 || Anneal(difference, temp))
@@ -100,16 +93,20 @@ namespace SysOpt.Helpers
                         //improvementCount++;
                         //if(improvementCount == ImprovementCountMax)
                         //{
-                        temp *= coolingRate;
                         //improvementCount = 0;
                         stepCount = -1;
                         //}
                     }
+                    temp *= coolingRate;
+
                 }
                 else
                 {
                     updateCurrentCost = false;
                 }
+                Console.Write(pollingServers[0].ToString());
+                Console.WriteLine(" " + (Math.Exp(-difference / temp)));
+
 
                 stepCount++;
                 if (stepCount > StepCountMax)
@@ -125,7 +122,7 @@ namespace SysOpt.Helpers
         public bool Anneal(double difference, double temperature)
         {
             Random random = new();
-            return random.Next(0, 2) < Math.Exp(-difference / temperature);
+            return random.NextDouble() < Math.Exp(-difference / temperature);
         }
 
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
@@ -140,7 +137,6 @@ namespace SysOpt.Helpers
             ps.Period = periods[randomIndex];
             ps.RelativeDeadline = periods[randomIndex];
             ps.ComputationTime += randomChange;
-            Console.WriteLine(WellformedPollingServer(ps));
             return WellformedPollingServer(ps);
 
         }
@@ -148,7 +144,7 @@ namespace SysOpt.Helpers
         //Making sure that the Polling server parameters isn't in the negative to prevent the algorithms working
         static public TimeTriggeredTask WellformedPollingServer(TimeTriggeredTask ps)
         {
-            if (ps.ComputationTime < 0)
+            if (ps.ComputationTime <= 0)
             {
                 ps.ComputationTime = 1;
             }
