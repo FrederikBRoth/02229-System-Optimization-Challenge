@@ -3,6 +3,7 @@ using SysOpt;
 using System.Formats.Asn1;
 using SysOpt.Entities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Bson;
 
 namespace Unit_Tests
 {
@@ -122,6 +123,21 @@ namespace Unit_Tests
             Assert.IsTrue(PDC.IsSchedulableByPDC(0, taskslcm, tasks.ttList));
             Assert.IsTrue(PDC.IsSchedulableByPDC(0, taskslcm100, tasks100.ttList));
             Assert.IsFalse(PDC.IsSchedulableByPDC(0, taskslcmOB, tasksOB.ttList));
+        }
+
+        [TestMethod]
+        public void RandomChangeTest()
+        {
+            // Arrange
+            int scale1 = 1;
+
+            // Monkey Test
+            for(int i = 0; i <= 10000; i++)
+            {
+                int randomChange1 = AuxiliaryHelper.RandomChange(scale1);
+                Assert.IsTrue(-1 <= randomChange1 && randomChange1 <= 1);
+            }
+            
         }
     }
 }
