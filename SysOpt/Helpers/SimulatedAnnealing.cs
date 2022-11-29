@@ -12,6 +12,8 @@ namespace SysOpt.Helpers
     {
         private const int ImprovementCountMax = 5;
         private const int StepCountMax = 100;
+        private const double EDFWeight = 0.7;
+        private const double ETWeight = 0.3;
         List<TimeTriggeredTask> pollingServers;
         int startTemp;
         double coolingRate;
@@ -32,10 +34,10 @@ namespace SysOpt.Helpers
             tasks.ttList.AddRange(ps);
             List<int> responseEDF = EDFsimulation.GetResponseTimeList(EDFsimulation.getSchedule(tasks.ttList));
             List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(ps, tasks.etList));
-            responseET.AddRange(responseEDF);
+            double result = (responseEDF.Average() * EDFWeight) + (responseET.Average() * ETWeight);
             tasks.ttList.RemoveAll(t => ps.Any(ps => ps.Name == t.Name));
             //Do sum instead of average
-            return responseET.Average();
+            return result;
         }
 
         public List<TimeTriggeredTask> Neighbors(List<int> periods)

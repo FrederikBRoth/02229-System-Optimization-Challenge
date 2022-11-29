@@ -9,16 +9,6 @@ namespace SysOpt.Helpers
 {
     internal class ETSchedulability
     {
-        private struct PollingServer
-        {
-            public PollingServer(int delta, double alpha)
-            {
-                Delta = delta;
-                Alpha = alpha;
-            }
-            int Delta { get; set; }
-            double Alpha { get; set; }
-        }
         public static List<(EventTriggeredTask, int)> Schedulability(TimeTriggeredTask pollingServer, List<EventTriggeredTask> tasks)
         {
             //Computes Delta and Alpha
@@ -97,10 +87,7 @@ namespace SysOpt.Helpers
             {
                 return responseTimes;
             }
-
         }
-
-
 
         public static void PrintETSchedulability(List<(EventTriggeredTask, int)> responseTimes)
         {

@@ -13,9 +13,10 @@ string testCasePath = "test_cases\\inf_10_10_seperation\\seperationCase.csv";
 Console.WriteLine("Number of TT Tasks: " + tasks.ttList.Count);
 Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
-int period = 4;
+int period = 2000;
 int deadline = period;
-int budget = 1;
+int budget = 1500;
+
 
 //Establishes polling Server
 TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(period, budget, 7, deadline, "PollingServer1");
