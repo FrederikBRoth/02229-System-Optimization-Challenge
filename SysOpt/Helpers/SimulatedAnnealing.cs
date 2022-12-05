@@ -130,11 +130,11 @@ namespace SysOpt.Helpers
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
         static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
         {
-            int randomChange = AuxiliaryHelper.RandomChange(1);
-            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
-            while (randomIndex < 0 && periods.Count > randomChange)
+            int randomChange = AuxiliaryHelper.RandomChange(10);
+            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(3);
+            while (randomIndex < 0 && periods.Count >= randomChange)
             {
-                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
+                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(3);
             }
             ps.Period = periods[randomIndex];
             ps.RelativeDeadline = periods[randomIndex];

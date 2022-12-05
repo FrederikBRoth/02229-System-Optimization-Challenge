@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace SysOpt.Helpers
         static public int RandomChange(int scale)
         {
             Random random = new();
-            return (random.Next(0, 2)*2-1)*scale; 
+            return (random.Next(0, 2)*2-1)*random.Next(1, scale+1); 
         }
         static public int GetPenaltyValue()
         {
@@ -63,6 +64,23 @@ namespace SysOpt.Helpers
                     list.Add(i);
             }
             return list;
+        }
+
+        public static List<TimeTriggeredTask> GetRandomPollingServers()
+        {
+            Random random = new Random();
+            List<int> periods = GetRefinedList(12000);
+            int size = periods.Count;
+            int period = periods[random.Next(0, size)];
+            int budget = random.Next(1, period);
+            Debug.WriteLine(period);
+
+            return new List<TimeTriggeredTask>()
+            {
+                new TimeTriggeredTask(period, budget, 7, period, "PollingServer1"),
+                new TimeTriggeredTask(period, budget, 7, period, "PollingServer1"),
+                new TimeTriggeredTask(period, budget, 7, period, "PollingServer1")
+            };
         }
     }
 }
