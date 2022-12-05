@@ -71,8 +71,8 @@ namespace SysOpt.Helpers
             Random random = new Random();
             List<int> periods = GetRefinedList(12000);
             int size = periods.Count;
-            int period = periods[random.Next(0, size)];
-            int budget = random.Next(1, period);
+            int period = periods[random.Next(size-5, size)];
+            int budget = period/2;
             Debug.WriteLine(period);
 
             return new List<TimeTriggeredTask>()

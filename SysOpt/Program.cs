@@ -43,7 +43,7 @@ ETSchedulability.PrintETSchedulability(ETSchedulability.Schedulability(pollingSe
 //}
 
 
-SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 5000, 0.95, tasks);
+SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 500000, 0.95, tasks);
 
 long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 //long milliAfter = DateTimeOffset.Now.ToUnixTimeMilliseconds();
@@ -52,7 +52,7 @@ long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 ////Console.WriteLine(sa.ToString());
 ////Console.WriteLine(sa.Cost(pollingServers));
 ////Console.WriteLine(sa.Neighbors()[0].ToString());
-Console.WriteLine(sa.Sim()[0].ToString());
+Console.WriteLine(sa.Sim().Item1[0].ToString());
 
 
 
