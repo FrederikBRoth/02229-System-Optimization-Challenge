@@ -12,8 +12,8 @@ namespace SysOpt.Helpers
     {
         private const int ImprovementCountMax = 5;
         private const int StepCountMax = 100;
-        private const double EDFWeight = 0.9;
-        private const double ETWeight = 0.1;
+        private const double EDFWeight = 0.7;
+        private const double ETWeight = 0.3;
         List<TimeTriggeredTask> pollingServers;
         int startTemp;
         double coolingRate;

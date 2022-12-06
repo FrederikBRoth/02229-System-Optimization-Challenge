@@ -59,6 +59,30 @@ namespace SysOpt.Helpers
                 }
             }
             return tasks;
+
+
         }
+        public static void WriteSAOutput(List<double> results)
+        {
+            int id = 1;
+            var records = new List<SAResult>();
+            foreach(var result in results)
+            {
+                records.Add(new SAResult { Id = id, Value = result });
+                id++;
+            }
+
+            var writer = new StreamWriter("Output\\TC1Output.csv");
+            var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            csv.WriteRecords(results);
+            
+
+        }
+    }
+
+    public class SAResult
+    {
+        public int Id { get; set; }
+        public double Value { get; set; }
     }
 }

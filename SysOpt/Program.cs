@@ -18,7 +18,8 @@ string tc4Path = "test_cases\\inf_10_10_seperation\\taskset__1643188539-a_0.6-b_
 (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tc4 = TaskReader.LoadTasks(tc4Path);
 
 
-(List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = tc1;
+
+(List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = tc3;
 
 
 List<TimeTriggeredTask> pollingServers = AuxiliaryHelper.GetRandomPollingServers();
@@ -52,7 +53,13 @@ long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 ////Console.WriteLine(sa.ToString());
 ////Console.WriteLine(sa.Cost(pollingServers));
 ////Console.WriteLine(sa.Neighbors()[0].ToString());
-Console.WriteLine(sa.Sim().Item1[0].ToString());
+//(List<TimeTriggeredTask>, List<double>) SAOuput = sa.Sim();
+//Console.WriteLine(SAOuput.Item1[0].ToString());
+
+List<double> tester = new();
+tester.Add(2.0);
+tester.Add(3.0);
+TaskReader.WriteSAOutput(tester);
 
 
 
