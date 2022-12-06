@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    internal class SimulatedAnnealing
+    public class SimulatedAnnealing
     {
         private const int ImprovementCountMax = 5;
         private const int StepCountMax = 100;
