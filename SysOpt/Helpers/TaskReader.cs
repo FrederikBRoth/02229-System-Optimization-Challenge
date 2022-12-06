@@ -52,7 +52,7 @@ namespace SysOpt.Helpers
                         csv.GetField<int>("priority"),
                         csv.GetField<int>("deadline"),
                         csv.GetField("name"),
-                        csv.GetField<int>("separation")
+                        csv.GetField<int>("seperation")
                     );
                     tasks.etList.Add(etTask);
 

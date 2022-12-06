@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Xml.Linq;
 using SysOpt.Helpers;
 
-string testCasePath = "test_cases\\inf_10_10_seperation\\seperationCase.csv";
+string testCasePath = "test_cases\\inf_10_10_seperation\\test1.csv";
 
 (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(testCasePath);
 
