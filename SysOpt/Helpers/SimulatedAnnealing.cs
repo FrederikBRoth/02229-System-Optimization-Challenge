@@ -32,6 +32,10 @@ namespace SysOpt.Helpers
         public double Cost(List<TimeTriggeredTask> ps)
         {
             tasks.ttList.AddRange(ps);
+            foreach(var tasks in tasks.ttList)
+            {
+                tasks.WorstCaseResponseTime = 0;
+            }
             List<int> responseEDF = EDFsimulation.GetResponseTimeList(EDFsimulation.getSchedule(tasks.ttList));
             List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(ps, tasks.etList));
             double result = (responseEDF.Sum() * EDFWeight) + (responseET.Sum() * ETWeight);

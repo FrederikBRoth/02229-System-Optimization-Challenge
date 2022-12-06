@@ -72,7 +72,7 @@ namespace SysOpt.Helpers
                 id++;
             }
 
-            using var writer = new StreamWriter("C:\\Users\\Bruger\\Documents\\Uni\\Sem7\\SysOp\\02229-System-Optimization-Challenge\\SysOpt\\Helpers\\TC1Output.csv");
+            using var writer = new StreamWriter("C:\\Users\\Bruger\\Documents\\Uni\\Sem7\\SysOp\\02229-System-Optimization-Challenge\\SysOpt\\Helpers\\TC2.csv");
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
             csv.WriteRecords(records);
 

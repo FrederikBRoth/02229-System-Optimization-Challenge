@@ -86,5 +86,7 @@ namespace SysOpt.Helpers
             return jobs.MinBy(j => j.AbsoluteDeadline);
         }
 
+        
+
     }
 }

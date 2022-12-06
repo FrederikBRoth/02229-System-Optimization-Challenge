@@ -13,9 +13,9 @@ string testCasePath = "test_cases\\inf_10_10_seperation\\test1.csv";
 Console.WriteLine("Number of TT Tasks: " + tasks.ttList.Count);
 Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
-int period = 2000;
+int period = 40;
 int deadline = period;
-int budget = 1500;
+int budget = 10;
 
 
 //Establishes polling Server
@@ -36,7 +36,6 @@ withPS.AddRange(tasks.ttList);
 
 
 //EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
-EDFsimulation.PrintResult(EDFsimulation.getSchedule(withPS));
 
 //Console.WriteLine(EDFsimulation.getSchedule(withPS));
 
