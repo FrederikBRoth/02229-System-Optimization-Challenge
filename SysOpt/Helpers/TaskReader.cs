@@ -59,6 +59,29 @@ namespace SysOpt.Helpers
                 }
             }
             return tasks;
+
+
         }
+        public static void WriteSAOutput(List<double> results)
+        {
+            int id = 1;
+            var records = new List<SAResult>();
+            foreach(var result in results)
+            {
+                records.Add(new SAResult { Id = id, Value = result });
+                id++;
+            }
+
+            using var writer = new StreamWriter("C:\\Users\\Bruger\\Documents\\Uni\\Sem7\\SysOp\\02229-System-Optimization-Challenge\\SysOpt\\Helpers\\TC1Output.csv");
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            csv.WriteRecords(records);
+
+        }
+    }
+
+    public class SAResult
+    {
+        public int Id { get; set; }
+        public double Value { get; set; }
     }
 }

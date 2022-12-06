@@ -34,7 +34,7 @@ namespace SysOpt.Helpers
             tasks.ttList.AddRange(ps);
             List<int> responseEDF = EDFsimulation.GetResponseTimeList(EDFsimulation.getSchedule(tasks.ttList));
             List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(ps, tasks.etList));
-            double result = (responseEDF.Average() * EDFWeight) + (responseET.Average() * ETWeight);
+            double result = (responseEDF.Sum() * EDFWeight) + (responseET.Sum() * ETWeight);
             tasks.ttList.RemoveAll(t => ps.Any(ps => ps.Name == t.Name));
             //Do sum instead of average
             return result;
@@ -67,9 +67,10 @@ namespace SysOpt.Helpers
          * for PollingServers is the ratio between Duration and Budget. The specific number is fairly irrelevant. 
          */
 
-        public List<TimeTriggeredTask> Sim()
+        public (List<TimeTriggeredTask>, List<double>) Sim()
         {
             List<int> periods = AuxiliaryHelper.GetRefinedList(12000);
+            List<double> costsThroughSearch = new();
             bool running = true;
             double temp = startTemp;
             int stepCount = 0;
@@ -108,7 +109,7 @@ namespace SysOpt.Helpers
                 }
                 Console.Write(pollingServers[0].ToString());
                 Console.WriteLine(" " + (Math.Exp(-difference / temp)));
-
+                costsThroughSearch.Add(currentCost);
 
                 stepCount++;
                 if (stepCount > StepCountMax)
@@ -117,7 +118,7 @@ namespace SysOpt.Helpers
                 }
 
             }
-            return pollingServers;
+            return (pollingServers, costsThroughSearch);
 
         }
 
@@ -130,15 +131,14 @@ namespace SysOpt.Helpers
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
         static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
         {
-            int randomChange = AuxiliaryHelper.RandomChange(1);
-            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
-            while (randomIndex < 0 && periods.Count > randomChange)
+            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(3);
+            while (randomIndex < 0 || periods.Count <= randomIndex)
             {
-                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
+                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(3);
             }
             ps.Period = periods[randomIndex];
             ps.RelativeDeadline = periods[randomIndex];
-            ps.ComputationTime += randomChange;
+            ps.ComputationTime = new Random().Next(1, ps.Period/2);
             return WellformedPollingServer(ps);
 
         }
