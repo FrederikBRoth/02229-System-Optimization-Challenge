@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Output\TC1Output.csv">
+    <Content Include="Helpers\TC1Output.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="test_cases\inf_10_10\taskset__1643188013-a_0.1-b_0.1-n_30-m_20-d_unif-p_2000-q_4000-g_1000-t_5__0__tsk.csv">
@@ -40,6 +40,10 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="28.0.1" />
     <PackageReference Include="System.Collections.NonGeneric" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Output\" />
   </ItemGroup>
 
 </Project>
