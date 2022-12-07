@@ -164,11 +164,26 @@ namespace SysOpt.Helpers
         public override string ToString()
         {
             string output = "";
+
             foreach (TimeTriggeredTask t in pollingServers)
             {
                 output += t.ToString() + "\n";
             }
             return output;
+        }
+
+        public int getAverageWCRT()
+        {
+            int WCRTSum = 0;
+            foreach (TimeTriggeredTask t in tasks.ttList)
+            {
+                WCRTSum += t.WorstCaseResponseTime;
+
+                Console.WriteLine(t.Name + " " + t.WorstCaseResponseTime);
+            }
+                
+
+            return WCRTSum / tasks.ttList.Count;
         }
 
 
