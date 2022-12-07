@@ -62,7 +62,7 @@ namespace SysOpt.Helpers
 
 
         }
-        public static void WriteSAOutput(List<double> results)
+        public static void WriteSAOutput(List<double> results, string filePath)
         {
             int id = 1;
             var records = new List<SAResult>();
@@ -72,7 +72,7 @@ namespace SysOpt.Helpers
                 id++;
             }
 
-            using var writer = new StreamWriter("C:\\Users\\Bruger\\Documents\\Uni\\Sem7\\SysOp\\02229-System-Optimization-Challenge\\SysOpt\\Helpers\\TC2.csv");
+            using var writer = new StreamWriter("C:\\Users\\marcu\\Documents\\SoftwareEngineering\\ComputerScience\\02229-System-Optimization-Challenge\\TestParam\\Results\\" + filePath);
             using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
             csv.WriteRecords(records);
 

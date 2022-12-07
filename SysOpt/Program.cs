@@ -59,14 +59,11 @@ long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 ////Console.WriteLine(sa.ToString());
 ////Console.WriteLine(sa.Cost(pollingServers));
 ////Console.WriteLine(sa.Neighbors()[0].ToString());
-<<<<<<< Updated upstream
+
 (List<TimeTriggeredTask>, List<double>) SAResults = sa.Sim();
 Console.WriteLine(SAResults.Item1[0].ToString());
-TaskReader.WriteSAOutput(SAResults.Item2);
-=======
-Console.WriteLine(sa.Sim()[0].ToString());
-Console.WriteLine(sa.getAverageWCRT());
->>>>>>> Stashed changes
+//TaskReader.WriteSAOutput(SAResults.Item2);
+
 
 
 
