@@ -33,11 +33,14 @@ string path = "test_cases\\inf_10_10_seperation\\test1.csv";
 int stdStartTemp = 5000;
 double stdCoolingRate = 0.96;
 
-// Control run
+/* ----Control run ---- */
 
-SimulatedAnnealing SAControl = new SimulatedAnnealing(pollingServers, stdStartTemp, stdCoolingRate, tasks);
-(List<TimeTriggeredTask>, List<double>) SAControlResults = SAControl.Sim();
-Console.WriteLine(SAControlResults.Item1[0].ToString());
+//SimulatedAnnealing SAControl = new SimulatedAnnealing(pollingServers, stdStartTemp, stdCoolingRate, tasks);
+//(List<TimeTriggeredTask>, List<double>) SAControlResults = SAControl.Sim();
+//Console.WriteLine(SAControlResults.Item1[0].ToString());
+
 /* ---- Cooling rate Test ---- */
-double HighCoolingRate = 2;
-//SimulatedAnnealing SAHighCoolingRate = new SimulatedAnnealing(pollingServers, stdStartTemp, stdCoolingRate, tasks);
+double HighCoolingRate = 0.00001;
+SimulatedAnnealing SAHighCoolingRate = new SimulatedAnnealing(pollingServers, stdStartTemp, HighCoolingRate, tasks);
+(List<TimeTriggeredTask>, List<double>) SAHighCoolingResult = SAHighCoolingRate.Sim();
+Console.WriteLine(SAHighCoolingResult.Item1[0].ToString());
