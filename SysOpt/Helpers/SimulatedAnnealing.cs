@@ -3,17 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    internal class SimulatedAnnealing
+    public class SimulatedAnnealing
     {
-        private const int ImprovementCountMax = 5;
-        private const int StepCountMax = 100;
-        private const double EDFWeight = 0.7;
-        private const double ETWeight = 0.3;
+        public int ImprovementCountMax = 5;
+        public int StepCountMax = 100;
+        public int scale = 3;
+        private double EDFWeight = 0.7;
+        private double ETWeight = 0.3;
         List<TimeTriggeredTask> pollingServers;
         int startTemp;
         double coolingRate;
@@ -28,6 +30,11 @@ namespace SysOpt.Helpers
             this.tasks = tasks;
         }
 
+        public SimulatedAnnealing DeepCopy()
+        {
+            SimulatedAnnealing dc = new SimulatedAnnealing(this.pollingServers, this.startTemp, this.coolingRate, this.tasks);
+            return dc;
+        }
 
         public double Cost(List<TimeTriggeredTask> ps)
         {
@@ -96,7 +103,7 @@ namespace SysOpt.Helpers
                     pollingServers = new(neighbors);
                     if (difference < 0.0)
                     {
-                        Console.WriteLine("Improvement" + currentCost);
+                        //Console.WriteLine("Improvement" + currentCost);
                         //improvementCount++;
                         //if(improvementCount == ImprovementCountMax)
                         //{
@@ -111,8 +118,7 @@ namespace SysOpt.Helpers
                 {
                     updateCurrentCost = false;
                 }
-                Console.Write(pollingServers[0].ToString());
-                Console.WriteLine(" " + (Math.Exp(-difference / temp)));
+                //Console.Write(pollingServers[0].ToString());
                 costsThroughSearch.Add(currentCost);
 
                 stepCount++;
@@ -133,12 +139,12 @@ namespace SysOpt.Helpers
         }
 
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
-        static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
+        public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
         {
-            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(3);
+            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(scale);
             while (randomIndex < 0 || periods.Count <= randomIndex)
             {
-                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(3);
+                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(scale);
             }
             ps.Period = periods[randomIndex];
             ps.RelativeDeadline = periods[randomIndex];
