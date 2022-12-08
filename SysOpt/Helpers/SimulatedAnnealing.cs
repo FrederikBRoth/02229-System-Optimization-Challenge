@@ -178,7 +178,7 @@ namespace SysOpt.Helpers
             return output;
         }
 
-        public int getAverageWCRT()
+        public (int ttwcrt, int etwcrt ) getAverageWCRT()
         {
             int WCRTSum = 0;
             foreach (TimeTriggeredTask t in tasks.ttList)
@@ -189,7 +189,7 @@ namespace SysOpt.Helpers
             }
                 
 
-            return WCRTSum / tasks.ttList.Count;
+            return (WCRTSum / tasks.ttList.Count, (int)ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(pollingServers, tasks.etList)).Average());
         }
 
 

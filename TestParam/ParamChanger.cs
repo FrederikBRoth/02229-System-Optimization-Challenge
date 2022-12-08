@@ -62,8 +62,9 @@ namespace TestParam
                 long milliAfter = DateTimeOffset.Now.ToUnixTimeMilliseconds();
                 int speed = (int)(milliAfter - milliBefore);
 
-                
-                Console.WriteLine("Average WCRT: " + sa.getAverageWCRT());
+                (int, int) wcrtValues = sa.getAverageWCRT();
+                Console.WriteLine("Average TTWCRT: " + wcrtValues.Item1);
+                Console.WriteLine("Average ETWCRT: " + wcrtValues.Item2);
                 Console.WriteLine("Speed: " + speed + "ms");
                 
 
