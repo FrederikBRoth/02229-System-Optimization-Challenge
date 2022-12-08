@@ -22,9 +22,10 @@ namespace TestParam
         //const double stdCoolingRate = 0.96;
 
         //string test1Path = "test_cases\\inf_10_10_seperation\\test1.csv";
-        
 
-        public ParamChanger() { 
+
+        public ParamChanger()
+        {
             //(List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(test1Path);
             //TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(period, budget, 7, deadline, "PollingServer1");
             //TimeTriggeredTask pollingServer2 = new TimeTriggeredTask(period, budget, 7, deadline, "PollingServer2");
@@ -37,7 +38,7 @@ namespace TestParam
 
         public static void generateTests(SimulatedAnnealing SA, int testNumber, string path)
         {
-            for(int i = 1;  i <= testNumber; i++)
+            for (int i = 1; i <= testNumber; i++)
             {
                 SimulatedAnnealing tempSA = SA.DeepCopy();
                 (List<TimeTriggeredTask>, List<double>) SAResults = tempSA.Sim();
@@ -45,11 +46,21 @@ namespace TestParam
                 Console.WriteLine(tempSA.getAverageWCRT());
                 TaskReader.WriteSAOutput(SAResults.Item2, path + i + ".csv");
             }
-            
+
 
         }
 
-    }
+        public static void speedTest(SimulatedAnnealing sa)
+        {
+            long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            sa.Sim();
+            long milliAfter = DateTimeOffset.Now.ToUnixTimeMilliseconds();
+            int speed = (int)(milliAfter - milliBefore);
 
+            
+            Console.WriteLine("Average WCRT: " + sa.getAverageWCRT());
+            Console.WriteLine("Speed: " + speed + "ms");
+        }
+    }
 
 }
