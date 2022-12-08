@@ -52,13 +52,36 @@ namespace SysOpt.Helpers
                         csv.GetField<int>("priority"),
                         csv.GetField<int>("deadline"),
                         csv.GetField("name"),
-                        csv.GetField<int>("separation")
+                        csv.GetField<int>("seperation")
                     );
                     tasks.etList.Add(etTask);
 
                 }
             }
             return tasks;
+
+
         }
+        public static void WriteSAOutput(List<double> results, string filePath)
+        {
+            int id = 1;
+            var records = new List<SAResult>();
+            foreach(var result in results)
+            {
+                records.Add(new SAResult { Id = id, Value = result });
+                id++;
+            }
+
+            using var writer = new StreamWriter("C:\\Users\\marcu\\Documents\\SoftwareEngineering\\ComputerScience\\02229-System-Optimization-Challenge\\TestParam\\Results\\" + filePath);
+            using var csv = new CsvWriter(writer, CultureInfo.InvariantCulture);
+            csv.WriteRecords(records);
+
+        }
+    }
+
+    public class SAResult
+    {
+        public int Id { get; set; }
+        public double Value { get; set; }
     }
 }

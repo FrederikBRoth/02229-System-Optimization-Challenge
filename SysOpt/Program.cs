@@ -6,16 +6,17 @@ using System.Globalization;
 using System.Xml.Linq;
 using SysOpt.Helpers;
 
-string testCasePath = "test_cases\\inf_10_10_seperation\\seperationCase.csv";
+string testCasePath = "test_cases\\inf_10_10_seperation\\test1.csv";
 
 (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(testCasePath);
 
 Console.WriteLine("Number of TT Tasks: " + tasks.ttList.Count);
 Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
-int period = 4;
+int period = 40;
 int deadline = period;
-int budget = 1;
+int budget = 10;
+
 
 //Establishes polling Server
 TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(period, budget, 7, deadline, "PollingServer1");
@@ -35,7 +36,6 @@ withPS.AddRange(tasks.ttList);
 
 
 //EDFsimulation.PrintResult(EDFsimulation.getSchedule(tasks.ttList));
-EDFsimulation.PrintResult(EDFsimulation.getSchedule(withPS));
 
 //Console.WriteLine(EDFsimulation.getSchedule(withPS));
 
@@ -59,7 +59,11 @@ long milliBefore = DateTimeOffset.Now.ToUnixTimeMilliseconds();
 ////Console.WriteLine(sa.ToString());
 ////Console.WriteLine(sa.Cost(pollingServers));
 ////Console.WriteLine(sa.Neighbors()[0].ToString());
-//Console.WriteLine(sa.Sim()[0].ToString());
+
+(List<TimeTriggeredTask>, List<double>) SAResults = sa.Sim();
+Console.WriteLine(SAResults.Item1[0].ToString());
+//TaskReader.WriteSAOutput(SAResults.Item2);
+
 
 
 

@@ -9,16 +9,6 @@ namespace SysOpt.Helpers
 {
     internal class ETSchedulability
     {
-        private struct PollingServer
-        {
-            public PollingServer(int delta, double alpha)
-            {
-                Delta = delta;
-                Alpha = alpha;
-            }
-            int Delta { get; set; }
-            double Alpha { get; set; }
-        }
         public static List<(EventTriggeredTask, int)> Schedulability(TimeTriggeredTask pollingServer, List<EventTriggeredTask> tasks)
         {
             //Computes Delta and Alpha
@@ -62,12 +52,14 @@ namespace SysOpt.Helpers
 
         public static List<(EventTriggeredTask, int)> Schedulability(List<TimeTriggeredTask> pollingServers, List<EventTriggeredTask> tasks)
         {
+            int maxSeperation = 0;
             //Index each ET to an indice to make sure we get the right lists down. ET with seperation 0 goes in all lists cause they can be in everything
             Dictionary<int, List<EventTriggeredTask>> etmap = new();
             List<(EventTriggeredTask, int)> responseTimes = new(); 
             foreach (EventTriggeredTask ettask in tasks) {
                if(ettask.Seperation != 0)
                 {
+                    if (maxSeperation < ettask.Seperation) maxSeperation = ettask.Seperation;
                     if (!etmap.ContainsKey(ettask.Seperation))
                     {
                         etmap.Add(ettask.Seperation, new List<EventTriggeredTask>());
@@ -78,7 +70,7 @@ namespace SysOpt.Helpers
             foreach(EventTriggeredTask ettask in tasks) {
                 if(ettask.Seperation == 0)
                 {
-                    for(int i = 1; i < etmap.Keys.Count; i++)
+                    for (int i = 1; i < etmap.Keys.Count; i++)
                     {
                         etmap[i].Add(ettask);
                     }
@@ -87,7 +79,7 @@ namespace SysOpt.Helpers
 
             if (etmap.Keys.Count == pollingServers.Count)
             {
-                for (int i = 1; i < etmap.Keys.Count; i++)
+                for (int i = 1; i <= maxSeperation; i++)
                 {
                     responseTimes.AddRange(Schedulability(pollingServers[i - 1], etmap[i]));
                 }
@@ -97,10 +89,7 @@ namespace SysOpt.Helpers
             {
                 return responseTimes;
             }
-
         }
-
-
 
         public static void PrintETSchedulability(List<(EventTriggeredTask, int)> responseTimes)
         {

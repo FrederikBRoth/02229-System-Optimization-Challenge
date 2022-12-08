@@ -3,15 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SysOpt.Helpers
 {
-    internal class SimulatedAnnealing
+    public class SimulatedAnnealing
     {
-        private const int ImprovementCountMax = 5;
-        private const int StepCountMax = 100;
+        public int ImprovementCountMax = 5;
+        public int StepCountMax = 100;
+        public int scale = 3;
+        private double EDFWeight = 0.7;
+        private double ETWeight = 0.3;
         List<TimeTriggeredTask> pollingServers;
         int startTemp;
         double coolingRate;
@@ -26,16 +30,25 @@ namespace SysOpt.Helpers
             this.tasks = tasks;
         }
 
+        public SimulatedAnnealing DeepCopy()
+        {
+            SimulatedAnnealing dc = new SimulatedAnnealing(this.pollingServers, this.startTemp, this.coolingRate, this.tasks);
+            return dc;
+        }
 
         public double Cost(List<TimeTriggeredTask> ps)
         {
             tasks.ttList.AddRange(ps);
+            foreach(var tasks in tasks.ttList)
+            {
+                tasks.WorstCaseResponseTime = 0;
+            }
             List<int> responseEDF = EDFsimulation.GetResponseTimeList(EDFsimulation.getSchedule(tasks.ttList));
             List<int> responseET = ETSchedulability.GetResponseTimeList(ETSchedulability.Schedulability(ps, tasks.etList));
-            responseET.AddRange(responseEDF);
+            double result = (responseEDF.Sum() * EDFWeight) + (responseET.Sum() * ETWeight);
             tasks.ttList.RemoveAll(t => ps.Any(ps => ps.Name == t.Name));
             //Do sum instead of average
-            return responseET.Average();
+            return result;
         }
 
         public List<TimeTriggeredTask> Neighbors(List<int> periods)
@@ -65,9 +78,10 @@ namespace SysOpt.Helpers
          * for PollingServers is the ratio between Duration and Budget. The specific number is fairly irrelevant. 
          */
 
-        public List<TimeTriggeredTask> Sim()
+        public (List<TimeTriggeredTask>, List<double>) Sim()
         {
             List<int> periods = AuxiliaryHelper.GetRefinedList(12000);
+            List<double> costsThroughSearch = new();
             bool running = true;
             double temp = startTemp;
             int stepCount = 0;
@@ -89,7 +103,7 @@ namespace SysOpt.Helpers
                     pollingServers = new(neighbors);
                     if (difference < 0.0)
                     {
-                        Console.WriteLine("Improvement" + currentCost);
+                        //Console.WriteLine("Improvement" + currentCost);
                         //improvementCount++;
                         //if(improvementCount == ImprovementCountMax)
                         //{
@@ -104,9 +118,8 @@ namespace SysOpt.Helpers
                 {
                     updateCurrentCost = false;
                 }
-                Console.Write(pollingServers[0].ToString());
-                Console.WriteLine(" " + (Math.Exp(-difference / temp)));
-
+                //Console.Write(pollingServers[0].ToString());
+                costsThroughSearch.Add(currentCost);
 
                 stepCount++;
                 if (stepCount > StepCountMax)
@@ -115,7 +128,7 @@ namespace SysOpt.Helpers
                 }
 
             }
-            return pollingServers;
+            return (pollingServers, costsThroughSearch);
 
         }
 
@@ -126,17 +139,16 @@ namespace SysOpt.Helpers
         }
 
         //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
-        static public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
+        public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
         {
-            int randomChange = AuxiliaryHelper.RandomChange(1);
-            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
-            while (randomIndex < 0 && periods.Count > randomChange)
+            int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(scale);
+            while (randomIndex < 0 || periods.Count <= randomIndex)
             {
-                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(1);
+                randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(scale);
             }
             ps.Period = periods[randomIndex];
             ps.RelativeDeadline = periods[randomIndex];
-            ps.ComputationTime += randomChange;
+            ps.ComputationTime = new Random().Next(1, ps.Period/2);
             return WellformedPollingServer(ps);
 
         }
@@ -158,11 +170,26 @@ namespace SysOpt.Helpers
         public override string ToString()
         {
             string output = "";
+
             foreach (TimeTriggeredTask t in pollingServers)
             {
                 output += t.ToString() + "\n";
             }
             return output;
+        }
+
+        public int getAverageWCRT()
+        {
+            int WCRTSum = 0;
+            foreach (TimeTriggeredTask t in tasks.ttList)
+            {
+                WCRTSum += t.WorstCaseResponseTime;
+
+                Console.WriteLine(t.Name + " " + t.WorstCaseResponseTime);
+            }
+                
+
+            return WCRTSum / tasks.ttList.Count;
         }
 
 

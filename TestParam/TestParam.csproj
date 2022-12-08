@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SysOpt\SysOpt.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Results\Control\" />
+    <Folder Include="Results\HighCooling\" />
+    <Folder Include="Results\HighStartTemp\" />
+    <Folder Include="Results\LowStartTemp\" />
+    <Folder Include="Results\LowScale\" />
+    <Folder Include="Results\HighTempHighCooling\" />
+    <Folder Include="Results\LowTempHighCooling\" />
+    <Folder Include="Results\LowTempLowCooling\" />
+    <Folder Include="Results\HighTempLowCooling\" />
+    <Folder Include="Results\HighScale\" />
+  </ItemGroup>
+
+</Project>
