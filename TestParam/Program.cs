@@ -150,3 +150,8 @@ double stdCoolingRate = 0.96;
 //double LowCoolingRate = 0.99;
 //SimulatedAnnealing SAHighTempLowCooling = new SimulatedAnnealing(pollingServers, HighStartTemp, LowCoolingRate, tasks);
 //ParamChanger.generateTests(SAHighTempLowCooling, 5, "\\HighTempLowCooling\\HighTempLowCooling");
+
+/* ---- Performance Test ---- */
+
+SimulatedAnnealing SAPTest = new SimulatedAnnealing(pollingServers, stdStartTemp, stdCoolingRate, tasks);
+ParamChanger.speedTest(SAPTest);
