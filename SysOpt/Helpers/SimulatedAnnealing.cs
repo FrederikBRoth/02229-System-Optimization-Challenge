@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Tracing;
 using System.Reflection.Metadata.Ecma335;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -138,7 +139,7 @@ namespace SysOpt.Helpers
             return random.NextDouble() < Math.Exp(-difference / temperature);
         }
 
-        //First of potential many attempts in finding a good neighbor function. Might be garbanzo.
+        // Changes period parameter
         public TimeTriggeredTask ChangeAllParameters(TimeTriggeredTask ps, List<int> periods)
         {
             int randomIndex = periods.IndexOf(ps.Period) + AuxiliaryHelper.RandomChange(scale);
