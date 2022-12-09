@@ -153,5 +153,5 @@ double stdCoolingRate = 0.96;
 
 /* ---- Performance Test ---- */
 
-SimulatedAnnealing SAPTest = new SimulatedAnnealing(pollingServers, stdStartTemp, stdCoolingRate, tasks);
-ParamChanger.speedTest(SAPTest);
+// SimulatedAnnealing SAPTest = new SimulatedAnnealing(pollingServers, stdStartTemp, stdCoolingRate, tasks);
+ParamChanger.speedTest();
