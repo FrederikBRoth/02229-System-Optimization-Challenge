@@ -77,24 +77,6 @@ namespace Unit_Tests
         }
 
         [TestMethod]
-        public void GetReadyJobs_Test()
-        {
-            // Arrange
-            (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(TTTestPath);
-            (TTScheduleTable, List<(string, int)>) schedule;
-            List<Job> jobs = EDFsimulation.GetReadyJobs(tasks.ttList, 0);
-            List<Job> expected0TickJobs;
-            int tick = 0;
-
-            // Act
-            schedule = EDFsimulation.getSchedule(tasks.ttList);
-            expected0TickJobs = tasks.ttList.Select(t => new Job(t, tick)).ToList();
-            expected0TickJobs = null;
-            // Assert
-            Assert.AreEqual(expected0TickJobs, EDFsimulation.GetReadyJobs(tasks.ttList, tick));
-        }
-
-        [TestMethod]
         public void GetPDCompTime_Test()
         {
             // Arrange
