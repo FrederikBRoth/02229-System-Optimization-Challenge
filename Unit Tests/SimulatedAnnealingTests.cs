@@ -34,11 +34,10 @@ namespace Unit_Tests
         {
             (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(testCasePath);
             List<int> periods = AuxiliaryHelper.GetRefinedList(12000);
-            TimeTriggeredTask ps = new TimeTriggeredTask(100, 5, 7, 100, "tttest");
+
             int period = 40;
             int deadline = period;
             int budget = 10;
-
 
             //Establishes polling Server
             TimeTriggeredTask pollingServer1 = new TimeTriggeredTask(period, budget, 7, deadline, "PollingServer1");
@@ -53,10 +52,17 @@ namespace Unit_Tests
                 pollingServer2,
                 pollingServer3
             };
-            SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 5000, 0.95, tasks);
+            for(int i = 0; i < 10000; i++)
+            {
+                TimeTriggeredTask ps = new TimeTriggeredTask(100, 5, 7, 100, "tttest");
 
-            TimeTriggeredTask result =  sa.ChangeAllParameters(ps, periods);
-            Console.WriteLine(result);
+                SimulatedAnnealing sa = new SimulatedAnnealing(pollingServers, 5000, 0.95, tasks);
+                int initialIndex = periods.IndexOf(ps.Period);
+                TimeTriggeredTask result =  sa.ChangeAllParameters(ps, periods);
+                int randomIndex = periods.IndexOf(result.Period);
+                Assert.IsTrue(randomIndex >= initialIndex - sa.scale && initialIndex + sa.scale >= randomIndex);
+                Assert.IsTrue(result.Period >= result.ComputationTime);
+            }
         }
 
         [TestMethod]
