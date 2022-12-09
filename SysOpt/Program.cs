@@ -11,6 +11,7 @@ string testCasePath = "test_cases\\inf_10_10_seperation\\test1.csv";
 (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks = TaskReader.LoadTasks(testCasePath);
 
 Console.WriteLine("Number of TT Tasks: " + tasks.ttList.Count);
+Console.WriteLine("Is schedulable: " + (PDC.IsSchedulableByPDC(0, AuxiliaryHelper.GetLCM(tasks.ttList.Select(t => t.Period).ToArray()), tasks.ttList) ? "Yes" : "No"));
 Console.WriteLine("Number of ET Tasks: " + tasks.etList.Count);
 
 int period = 40;
