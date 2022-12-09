@@ -96,6 +96,7 @@ namespace Unit_Tests
             (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasks100 = TaskReader.LoadTasks(TTTest100);
             (List<TimeTriggeredTask> ttList, List<EventTriggeredTask> etList) tasksOB = TaskReader.LoadTasks(TTTestOB);
 
+            //Act 
             int taskslcm = AuxiliaryHelper.GetLCM(tasks.ttList.Select(t => t.Period).ToArray());
             int taskslcm100 = AuxiliaryHelper.GetLCM(tasks100.ttList.Select(t => t.Period).ToArray());
             int taskslcmOB = AuxiliaryHelper.GetLCM(tasksOB.ttList.Select(t => t.Period).ToArray());
