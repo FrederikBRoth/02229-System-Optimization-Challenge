@@ -23,15 +23,9 @@ namespace SysOpt.Helpers
         // It is expected that [0,L] is used for the time interval, L being LCM of tasks
         public static int GetPDCompTime(int t1, int t2, TimeTriggeredTask task)
         {
-            // Sort out half complete periods
-            double Start = t1 / task.Period;
-            int RoundedStart = (int) Math.Ceiling(Start);
-            double End = t2 / task.RelativeDeadline;
-            int RoundedEnd = (int) Math.Floor(End);
+            // adds all the Computation Time between t1=0 and t2
+            int PDCompTime = ((t2) / task.Period) * task.ComputationTime;
 
-            // multiplies all the Computation Time between t1 and t2
-            int PDCompTime = ((t2 + task.Period - task.RelativeDeadline) / task.Period) * task.ComputationTime;
-            // true if t1 and t2 contain no period
             if(PDCompTime < 0)
                 return 0;
 
